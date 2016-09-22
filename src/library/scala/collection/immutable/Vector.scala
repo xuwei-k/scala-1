@@ -114,7 +114,16 @@ override def companion: GenericCompanion[Vector] = Vector
       } else Iterator.empty.next()
   }
 
-  // TODO: reverse
+  override
+  def reverse: Vector[A] = {
+    var i = length
+    val builder = Vector.newBuilder[A]
+    while(i > 0) {
+      i -= 1
+      builder += apply(i)
+    }
+    builder.result()
+  }
 
   // TODO: check performance of foreach/map etc. should override or not?
   // Ideally, clients will inline calls to map all the way down, including the iterator/builder methods.

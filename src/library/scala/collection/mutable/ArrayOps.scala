@@ -199,6 +199,14 @@ object ArrayOps {
     def length: Int = repr.length
     def apply(index: Int): T = repr(index)
     def update(index: Int, elem: T) { repr(index) = elem }
+
+    override def foreach[U](f: T => U): Unit = {
+      var i = 0
+      while(i < repr.length) {
+        f(repr(i))
+        i += 1
+      }
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `byte`s. */
@@ -211,6 +219,14 @@ final class ofByte(override val repr: Array[Byte]) extends AnyVal with ArrayOps[
     def length: Int = repr.length
     def apply(index: Int): Byte = repr(index)
     def update(index: Int, elem: Byte) { repr(index) = elem }
+
+    override def foreach[U](f: Byte => U): Unit = {
+      var i = 0
+      while(i < repr.length) {
+        f(repr(i))
+        i += 1
+      }
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `short`s. */
@@ -223,6 +239,14 @@ final class ofShort(override val repr: Array[Short]) extends AnyVal with ArrayOp
     def length: Int = repr.length
     def apply(index: Int): Short = repr(index)
     def update(index: Int, elem: Short) { repr(index) = elem }
+
+    override def foreach[U](f: Short => U): Unit = {
+      var i = 0
+      while(i < repr.length) {
+        f(repr(i))
+        i += 1
+      }
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `char`s. */
@@ -235,6 +259,14 @@ final class ofChar(override val repr: Array[Char]) extends AnyVal with ArrayOps[
     def length: Int = repr.length
     def apply(index: Int): Char = repr(index)
     def update(index: Int, elem: Char) { repr(index) = elem }
+
+    override def foreach[U](f: Char => U): Unit = {
+      var i = 0
+      while(i < repr.length) {
+        f(repr(i))
+        i += 1
+      }
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `int`s. */
@@ -247,6 +279,14 @@ final class ofInt(override val repr: Array[Int]) extends AnyVal with ArrayOps[In
     def length: Int = repr.length
     def apply(index: Int): Int = repr(index)
     def update(index: Int, elem: Int) { repr(index) = elem }
+
+    override def foreach[U](f: Int => U): Unit = {
+      var i = 0
+      while(i < repr.length) {
+        f(repr(i))
+        i += 1
+      }
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `long`s. */
@@ -259,6 +299,14 @@ final class ofLong(override val repr: Array[Long]) extends AnyVal with ArrayOps[
     def length: Int = repr.length
     def apply(index: Int): Long = repr(index)
     def update(index: Int, elem: Long) { repr(index) = elem }
+
+    override def foreach[U](f: Long => U): Unit = {
+      var i = 0
+      while(i < repr.length) {
+        f(repr(i))
+        i += 1
+      }
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `float`s. */
@@ -271,6 +319,14 @@ final class ofFloat(override val repr: Array[Float]) extends AnyVal with ArrayOp
     def length: Int = repr.length
     def apply(index: Int): Float = repr(index)
     def update(index: Int, elem: Float) { repr(index) = elem }
+
+    override def foreach[U](f: Float => U): Unit = {
+      var i = 0
+      while(i < repr.length) {
+        f(repr(i))
+        i += 1
+      }
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `double`s. */
@@ -283,6 +339,14 @@ final class ofDouble(override val repr: Array[Double]) extends AnyVal with Array
     def length: Int = repr.length
     def apply(index: Int): Double = repr(index)
     def update(index: Int, elem: Double) { repr(index) = elem }
+
+    override def foreach[U](f: Double => U): Unit = {
+      var i = 0
+      while(i < repr.length) {
+        f(repr(i))
+        i += 1
+      }
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `boolean`s. */
@@ -295,6 +359,14 @@ final class ofBoolean(override val repr: Array[Boolean]) extends AnyVal with Arr
     def length: Int = repr.length
     def apply(index: Int): Boolean = repr(index)
     def update(index: Int, elem: Boolean) { repr(index) = elem }
+
+    override def foreach[U](f: Boolean => U): Unit = {
+      var i = 0
+      while(i < repr.length) {
+        f(repr(i))
+        i += 1
+      }
+    }
   }
 
   /** A class of `ArrayOps` for arrays of `Unit` types. */
@@ -307,5 +379,13 @@ final class ofUnit(override val repr: Array[Unit]) extends AnyVal with ArrayOps[
     def length: Int = repr.length
     def apply(index: Int): Unit = repr(index)
     def update(index: Int, elem: Unit) { repr(index) = elem }
+
+    override def foreach[U](f: Unit => U): Unit = {
+      var i = 0
+      while(i < repr.length) {
+        f(repr(i))
+        i += 1
+      }
+    }
   }
 }

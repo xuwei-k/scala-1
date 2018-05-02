@@ -13,7 +13,7 @@ object ScalaCompilerOptionsExporter {
   case class Category(name: String, load: Int) extends Ordered[Category] {
     def compare(that: Category): Int = (this.load) compare (that.load)
   }
-  val StandardSettings = Category("JVM Settings", 0)
+  val StandardSettings = Category("Standard Settings", 0)
   val JVMSettings = Category("JVM Settings", 1)
   val PluginSettings = Category("Plugin Settings", 2)
   val AdvancedSettings = Category("Advanced Settings", 3)

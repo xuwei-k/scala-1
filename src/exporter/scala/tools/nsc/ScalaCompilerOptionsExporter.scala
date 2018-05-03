@@ -98,7 +98,7 @@ object ScalaCompilerOptionsExporter {
           case px: settings.PrefixSetting =>
             Schema(_type="Prefix")
           case sv: settings.ScalaVersionSetting =>
-            Schema(_type="ScalaVerion", arg = Some(sv.arg).map(dehtmlfy), default = Some(sv.initial.unparse))
+            Schema(_type="ScalaVersion", arg = Some(sv.arg).map(dehtmlfy), default = Some(sv.initial.unparse))
           case pathStr: settings.PathSetting =>
             Schema(_type="Path", arg = Some(pathStr.arg), default = Some(pathStr.default))
           case str: settings.StringSetting =>

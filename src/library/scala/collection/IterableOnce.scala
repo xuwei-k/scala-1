@@ -146,6 +146,12 @@ object IterableOnce {
 /** This implementation trait can be mixed into an `IterableOnce` to get the basic methods that are shared between
   * `Iterator` and `Iterable`. The `IterableOnce` must support multiple calls to `iterator` but may or may not
   * return the same `Iterator` every time.
+  *
+  * @define consumesAndProducesIterator
+  *  After calling this method, one should discard the iterator it was called
+  *  on, and use only the iterator that was returned. Using the old iterator
+  *  is undefined, subject to change, and may result in changes to the new
+  *  iterator as well.
   */
 trait IterableOnceOps[+A, +CC[_], +C] extends Any { this: IterableOnce[A] =>
 

@@ -47,10 +47,10 @@ package util
  *
  *  Since `Either` defines the methods `map` and `flatMap`, it can also be used in for comprehensions:
  *  {{{
- *  val right1 = Right(1)   : Right[Double, Int] 
+ *  val right1 = Right(1)   : Either[Double, Int] 
  *  val right2 = Right(2)
  *  val right3 = Right(3)
- *  val left23 = Left(23.0) : Left[Double, Int]  
+ *  val left23 = Left(23.0) : Either[Double, Int]  
  *  val left42 = Left(42.0)
  *
  *  for {
@@ -76,11 +76,11 @@ package util
  *    i <- right1
  *    if i > 0
  *  } yield i
- *  // error: value withFilter is not a member of Right[Double,Int]
+ *  // error: value withFilter is not a member of Either[Double,Int]
  *
  *  // Similarly, refutable patterns are not supported:
  *  for (x: Int <- right1) yield x
- *  // error: value withFilter is not a member of Right[Double,Int]
+ *  // error: value withFilter is not a member of Either[Double,Int]
  *  }}}
  *
  *  Since `for` comprehensions use `map` and `flatMap`, the types
@@ -220,9 +220,9 @@ sealed abstract class Either[+A, +B] extends Product with Serializable {
    *  will be returned, otherwise this value will be returned unmodified.
    *
    *  @example {{{
-   *  Right[String, Either[String, Int]](Right(12)).joinRight // Result: Right(12)
-   *  Right[String, Either[String, Int]](Left("flower")).joinRight // Result: Left("flower")
-   *  Left[String, Either[String, Int]]("flower").joinRight // Result: Left("flower")
+   *  Right[Either[String, Int]](Right(12)).joinRight // Result: Right(12)
+   *  Right[Either[String, Int]](Left("flower")).joinRight // Result: Left("flower")
+   *  Left[String]("flower").joinRight // Result: Left("flower")
    *  }}}
    *
    * This method, and `joinLeft`, are analogous to `Option#flatten`
@@ -243,9 +243,9 @@ sealed abstract class Either[+A, +B] extends Product with Serializable {
    *  will be returned, otherwise this value will be returned unmodified.
    *
    *  {{{
-   *  Left[Either[Int, String], String](Right("flower")).joinLeft // Result: Right("flower")
-   *  Left[Either[Int, String], String](Left(12)).joinLeft // Result: Left(12)
-   *  Right[Either[Int, String], String]("daisy").joinLeft // Result: Right("daisy")
+   *  Left[Either[Int, String]](Right("flower")).joinLeft // Result: Right("flower")
+   *  Left[Either[Int, String]](Left(12)).joinLeft // Result: Left(12)
+   *  Right[String]("daisy").joinLeft // Result: Right("daisy")
    *  }}}
    *
    *  This method, and `joinRight`, are analogous to `Option#flatten`.
@@ -336,7 +336,7 @@ sealed abstract class Either[+A, +B] extends Product with Serializable {
    */
   def flatMap[A1 >: A, B1](f: B => Either[A1, B1]): Either[A1, B1] = this match {
     case Right(b) => f(b)
-    case _        => this.asInstanceOf[Either[A1, B1]]
+    case l@Left(_) => l
   }
 
   /** The given function is applied if this is a `Right`.
@@ -348,7 +348,7 @@ sealed abstract class Either[+A, +B] extends Product with Serializable {
    */
   def map[B1](f: B => B1): Either[A, B1] = this match {
     case Right(b) => Right(f(b))
-    case _        => this.asInstanceOf[Either[A, B1]]
+    case l@Left(_) => l
   }
 
   /** Returns `Right` with the existing value of `Right` if this is a `Right`
@@ -422,7 +422,7 @@ sealed abstract class Either[+A, +B] extends Product with Serializable {
  *  @author <a href="mailto:research@workingmouse.com">Tony Morris</a>, Workingmouse
  *  @version 1.0, 11/10/2008
  */
-final case class Left[+A, +B](value: A) extends Either[A, B] {
+final case class Left[+A](value: A) extends Either[A, Nothing] {
   def isLeft  = true
   def isRight = false
 }
@@ -432,7 +432,7 @@ final case class Left[+A, +B](value: A) extends Either[A, B] {
  *  @author <a href="mailto:research@workingmouse.com">Tony Morris</a>, Workingmouse
  *  @version 1.0, 11/10/2008
  */
-final case class Right[+A, +B](value: B) extends Either[A, B] {
+final case class Right[+B](value: B) extends Either[Nothing, B] {
   def isLeft  = false
   def isRight = true
 }
@@ -555,19 +555,19 @@ object Either {
      */
     def flatMap[A1, B1 >: B](f: A => Either[A1, B1]): Either[A1, B1] = e match {
       case Left(a) => f(a)
-      case _       => e.asInstanceOf[Either[A1, B1]]
+      case r@Right(_) => r
     }
 
     /** Maps the function argument through `Left`.
      *
      *  {{{
      *  Left(12).left.map(_ + 2) // Left(14)
-     *  Right[Int, Int](12).left.map(_ + 2) // Right(12)
+     *  Right[Int](12).left.map(_ + 2) // Right(12)
      *  }}}
      */
     def map[A1](f: A => A1): Either[A1, B] = e match {
       case Left(a) => Left(f(a))
-      case _       => e.asInstanceOf[Either[A1, B]]
+      case r@Right(_) => r
     }
 
     /** Returns `None` if this is a `Right` or if the given predicate
@@ -580,7 +580,7 @@ object Either {
      *  }}}
      */
     def filter[B1](p: A => Boolean): Option[Either[A, B1]] = e match {
-      case x @ Left(a) if p(a) => Some(x.asInstanceOf[Either[A, B1]])
+      case x @ Left(a) if p(a) => Some(x)
       case _                   => None
     }
 
@@ -696,7 +696,7 @@ object Either {
      */
     def flatMap[A1 >: A, B1](f: B => Either[A1, B1]): Either[A1, B1] = e match {
       case Right(b) => f(b)
-      case _        => e.asInstanceOf[Either[A1, B1]]
+      case l@Left(_) => l
     }
 
     /** The given function is applied if this is a `Right`.
@@ -708,7 +708,7 @@ object Either {
      */
     def map[B1](f: B => B1): Either[A, B1] = e match {
       case Right(b) => Right(f(b))
-      case _        => e.asInstanceOf[Either[A, B1]]
+      case l@Left(_) => l
     }
 
     /** Returns `None` if this is a `Left` or if the

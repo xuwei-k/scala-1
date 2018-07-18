@@ -423,21 +423,69 @@ final class ArrayOps[A](val xs: Array[A]) extends AnyVal {
   def sorted[B >: A](implicit ord: Ordering[B]): Array[A] = {
     val len = xs.length
     if(xs.getClass.getComponentType.isPrimitive && len > 1) {
-      // need to copy into a boxed representation to use Java's Arrays.sort
-      val a = new Array[AnyRef](len)
-      var i = 0
-      while(i < len) {
-        a(i) = xs(i).asInstanceOf[AnyRef]
-        i += 1
+      def notNaturalSort(): Array[A] = {
+        // need to copy into a boxed representation to use Java's Arrays.sort
+        val a = new Array[AnyRef](len)
+        var i = 0
+        while(i < len) {
+          a(i) = xs(i).asInstanceOf[AnyRef]
+          i += 1
+        }
+        java.util.Arrays.sort(a, ord.asInstanceOf[Ordering[AnyRef]])
+        val res = new Array[A](len)
+        i = 0
+        while(i < len) {
+          res(i) = a(i).asInstanceOf[A]
+          i += 1
+        }
+        res
       }
-      java.util.Arrays.sort(a, ord.asInstanceOf[Ordering[AnyRef]])
-      val res = new Array[A](len)
-      i = 0
-      while(i < len) {
-        res(i) = a(i).asInstanceOf[A]
-        i += 1
-      }
-      res
+      ((xs: Array[_]) match {
+        case xs: Array[Int] =>
+          if (ord eq implicitly[Ordering[Int]]) {
+            val res = xs.clone()
+            java.util.Arrays.sort(res)
+            res
+          } else notNaturalSort()
+        case xs: Array[Long] =>
+          if (ord eq implicitly[Ordering[Long]]) {
+            val res = xs.clone()
+            java.util.Arrays.sort(res)
+            res
+          } else notNaturalSort()
+        case xs: Array[Double] =>
+          if (ord.isInstanceOf[Ordering.Double.TotalOrdering]) {
+            val res = xs.clone()
+            java.util.Arrays.sort(res)
+            res
+          } else notNaturalSort()
+        case xs: Array[Float] =>
+          if (ord.isInstanceOf[Ordering.Float.TotalOrdering]) {
+            val res = xs.clone()
+            java.util.Arrays.sort(res)
+            res
+          } else notNaturalSort()
+        case xs: Array[Char] =>
+          if (ord eq implicitly[Ordering[Char]]) {
+            val res = xs.clone()
+            java.util.Arrays.sort(res)
+            res
+          } else notNaturalSort()
+        case xs: Array[Byte] =>
+          if (ord eq implicitly[Ordering[Byte]]) {
+            val res = xs.clone()
+            java.util.Arrays.sort(res)
+            res
+          } else notNaturalSort()
+        case xs: Array[Short] =>
+          if (ord eq implicitly[Ordering[Short]]) {
+            val res = xs.clone()
+            java.util.Arrays.sort(res)
+            res
+          } else notNaturalSort()
+        case _ =>
+          notNaturalSort()
+      }).asInstanceOf[Array[A]]
     } else {
       val copy = slice(0, len)
       if(len > 1)

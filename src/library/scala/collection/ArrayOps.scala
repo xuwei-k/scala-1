@@ -613,6 +613,7 @@ final class ArrayOps[A](val xs: Array[A]) extends AnyVal {
       v
     }
     ((xs: Any) match {
+      case xs: Array[Unit]    => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case xs: Array[AnyRef]  => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case xs: Array[Int]     => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case xs: Array[Double]  => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
@@ -622,7 +623,6 @@ final class ArrayOps[A](val xs: Array[A]) extends AnyVal {
       case xs: Array[Byte]    => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case xs: Array[Short]   => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case xs: Array[Boolean] => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
-      case xs: Array[Unit]    => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case null => throw new NullPointerException
     }).asInstanceOf[B]
   }
@@ -718,6 +718,7 @@ final class ArrayOps[A](val xs: Array[A]) extends AnyVal {
       v
     }
     ((xs: Any) match {
+      case xs: Array[Unit]    => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case xs: Array[AnyRef]  => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case xs: Array[Int]     => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case xs: Array[Double]  => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
@@ -727,7 +728,6 @@ final class ArrayOps[A](val xs: Array[A]) extends AnyVal {
       case xs: Array[Byte]    => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case xs: Array[Short]   => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case xs: Array[Boolean] => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
-      case xs: Array[Unit]    => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case null => throw new NullPointerException
     }).asInstanceOf[B]
 
@@ -759,6 +759,7 @@ final class ArrayOps[A](val xs: Array[A]) extends AnyVal {
       } else z
     }
     ((xs: Any) match {
+      case xs: Array[Unit]    => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case xs: Array[AnyRef]  => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case xs: Array[Int]     => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case xs: Array[Double]  => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
@@ -768,7 +769,6 @@ final class ArrayOps[A](val xs: Array[A]) extends AnyVal {
       case xs: Array[Byte]    => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case xs: Array[Short]   => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case xs: Array[Boolean] => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
-      case xs: Array[Unit]    => f(xs, op.asInstanceOf[(Any, Any) => Any], z)
       case null => throw new NullPointerException
     }).asInstanceOf[A1]
   }

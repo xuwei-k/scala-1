@@ -207,6 +207,7 @@ object ArraySeq extends StrictOptimizedClassTagSeqFactory[ArraySeq] { self =>
    */
   def unsafeWrapArray[T](x: Array[T]): ArraySeq[T] = ((x: Array[_]) match {
     case null              => null
+    case x: Array[Unit]    => new ofUnit(x)
     case x: Array[AnyRef]  => new ofRef[AnyRef](x)
     case x: Array[Int]     => new ofInt(x)
     case x: Array[Double]  => new ofDouble(x)
@@ -216,7 +217,6 @@ object ArraySeq extends StrictOptimizedClassTagSeqFactory[ArraySeq] { self =>
     case x: Array[Byte]    => new ofByte(x)
     case x: Array[Short]   => new ofShort(x)
     case x: Array[Boolean] => new ofBoolean(x)
-    case x: Array[Unit]    => new ofUnit(x)
   }).asInstanceOf[ArraySeq[T]]
 
   @SerialVersionUID(3L)

@@ -520,7 +520,11 @@ sealed private[immutable] trait LazyListFactory[+CC[+X] <: LinearSeq[X] with Laz
     def map[B](f: A => B): CC[B] = filtered.map(f)
     def flatMap[B](f: A => IterableOnce[B]): CC[B] = filtered.flatMap(f)
     def foreach[U](f: A => U): Unit = filtered.foreach(f)
-    def withFilter(q: A => Boolean): collection.WithFilter[A, CC] = new WithFilter(filtered, q)
+    def withFilter(q: A => Boolean): collection.WithFilter[A, CC] = {
+      val f = new WithFilter[A](s, a => p(a) && q(a))
+      s = null.asInstanceOf[CC[A]]
+      f
+    }
   }
 
   /** An infinite LazyList that repeatedly applies a given function to a start value.

@@ -115,7 +115,7 @@ class LinkedHashSet[A]
     table.init(in, table.createNewEntry(in.readObject().asInstanceOf[A], null))
   }
 
-  override protected[this] def stringPrefix = "LinkedHashSet"
+  override protected[this] def className = "LinkedHashSet"
 }
 
 /** $factoryInfo

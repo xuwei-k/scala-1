@@ -30,7 +30,7 @@ class Stack[A] protected (array: Array[AnyRef], start: Int, end: Int)
 
   override def iterableFactory: SeqFactory[Stack] = Stack
 
-  override protected[this] def stringPrefix = "Stack"
+  override protected[this] def className = "Stack"
 
   /**
     * Add elements to the top of this stack

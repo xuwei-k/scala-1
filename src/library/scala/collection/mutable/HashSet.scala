@@ -74,7 +74,7 @@ final class HashSet[A]
     table.init(in, x => ())
   }
 
-  override protected[this] def stringPrefix = "HashSet"
+  override protected[this] def className = "HashSet"
 }
 
 /**

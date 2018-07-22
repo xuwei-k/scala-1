@@ -20,7 +20,7 @@ trait View[+A] extends Iterable[A] with IterableOps[A, View, View[A]] {
 
   override def toString = stringPrefix + "(?)"
 
-  override protected[this] def stringPrefix = "View"
+  override protected[this] def className = "View"
 
   @deprecated("Views no longer know about their underlying collection type; .force always returns an IndexedSeq", "2.13.0")
   @`inline` def force: IndexedSeq[A] = toIndexedSeq

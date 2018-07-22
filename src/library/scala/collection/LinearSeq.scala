@@ -9,7 +9,7 @@ import scala.language.higherKinds
   *  Known subclasses: List, LazyList
   */
 trait LinearSeq[+A] extends Seq[A] with LinearSeqOps[A, LinearSeq, LinearSeq[A]] {
-  override protected[this] def stringPrefix: String = "LinearSeq"
+  override protected[this] def className: String = "LinearSeq"
 }
 
 @SerialVersionUID(3L)

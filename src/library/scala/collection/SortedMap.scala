@@ -31,7 +31,7 @@ trait SortedMap[K, +V]
 
   override protected[this] def writeReplace(): AnyRef = new DefaultSerializationProxy(sortedMapFactory.sortedMapFactory[K, V], this)
 
-  override protected[this] def stringPrefix: String = "SortedMap"
+  override protected[this] def className: String = "SortedMap"
 }
 
 trait SortedMapOps[K, +V, +CC[X, Y] <: Map[X, Y] with SortedMapOps[X, Y, CC, _], +C <: SortedMapOps[K, V, CC, C]]

@@ -54,7 +54,7 @@ sealed abstract class ArraySeq[T]
     * or subtype of the element type. */
   def array: Array[_]
 
-  override protected[this] def stringPrefix = "ArraySeq"
+  override protected[this] def className = "ArraySeq"
 
   /** Clones this object, including the underlying Array. */
   override def clone(): ArraySeq[T] = ArraySeq.make(array.clone()).asInstanceOf[ArraySeq[T]]

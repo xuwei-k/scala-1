@@ -55,7 +55,7 @@ trait Map[K, +V]
   @deprecated("Use -- or removeAll on an immutable Map", "2.13.0")
   def - (key1: K, key2: K, keys: K*): Map[K, V]
 
-  override protected[this] def stringPrefix: String = "Map"
+  override protected[this] def className: String = "Map"
 
   override def toString(): String = super[Iterable].toString() // Because `Function1` overrides `toString` too
 }

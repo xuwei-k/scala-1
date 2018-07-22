@@ -26,7 +26,7 @@ trait SortedSet[A] extends Set[A] with SortedSetOps[A, SortedSet, SortedSet[A]] 
 
   override protected[this] def writeReplace(): AnyRef = new DefaultSerializationProxy(sortedIterableFactory.evidenceIterableFactory[A], this)
 
-  override protected[this] def stringPrefix: String = "SortedSet"
+  override protected[this] def className: String = "SortedSet"
 }
 
 trait SortedSetOps[A, +CC[X] <: SortedSet[X], +C <: SortedSetOps[A, CC, C]]

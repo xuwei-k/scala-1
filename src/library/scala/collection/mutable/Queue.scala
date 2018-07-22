@@ -35,7 +35,7 @@ class Queue[A] protected (array: Array[AnyRef], start: Int, end: Int)
 
   override def iterableFactory: SeqFactory[Queue] = Queue
 
-  override protected[this] def stringPrefix = "Queue"
+  override protected[this] def className = "Queue"
 
   /**
     * Add elements to the end of this queue

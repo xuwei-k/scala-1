@@ -439,7 +439,7 @@ class AnyRefMap[K <: AnyRef, V] private[collection] (defaultEntry: K => V, initi
 
   override protected[this] def writeReplace(): AnyRef = new DefaultSerializationProxy(AnyRefMap.toFactory[K, V](AnyRefMap), this)
 
-  override protected[this] def stringPrefix = "AnyRefMap"
+  override protected[this] def className = "AnyRefMap"
 }
 
 object AnyRefMap {

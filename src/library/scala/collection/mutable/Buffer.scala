@@ -153,7 +153,7 @@ trait Buffer[A]
     this
   }
 
-  override protected[this] def stringPrefix = "Buffer"
+  override protected[this] def className = "Buffer"
 }
 
 trait IndexedBuffer[A] extends IndexedSeq[A]

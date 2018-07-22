@@ -54,7 +54,7 @@ class ListMap[K, V]
 
   final override def size: Int = siz
 
-  override protected[this] def stringPrefix = "ListMap"
+  override protected[this] def className = "ListMap"
 }
 
 /** $factoryInfo

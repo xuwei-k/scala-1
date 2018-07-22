@@ -493,7 +493,7 @@ class ArrayDeque[A] protected (
   @inline private[this] def requireBounds(idx: Int, until: Int = length) =
     if (idx < 0 || idx >= until) throw new IndexOutOfBoundsException(idx.toString)
 
-  override protected[this] def stringPrefix = "ArrayDeque"
+  override protected[this] def className = "ArrayDeque"
 }
 
 /**

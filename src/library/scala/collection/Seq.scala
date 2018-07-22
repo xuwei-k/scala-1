@@ -38,7 +38,7 @@ trait Seq[+A]
 
   override def toString(): String = super[Iterable].toString()
 
-  override protected[this] def stringPrefix: String = "Seq"
+  override protected[this] def className: String = "Seq"
 }
 
 /**

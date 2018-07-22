@@ -157,7 +157,7 @@ class ArrayBuffer[A] private (initialElements: Array[AnyRef], initialSize: Int)
   @deprecatedOverriding("ArrayBuffer[A] no longer extends Builder[A, ArrayBuffer[A]]", "2.13.0")
   @inline def mapResult[NewTo](f: (ArrayBuffer[A]) ⇒ NewTo): Builder[A, NewTo] = new GrowableBuilder(this).mapResult(f)
 
-  override protected[this] def stringPrefix = "ArrayBuffer"
+  override protected[this] def className = "ArrayBuffer"
 
   override def copyToArray[B >: A](xs: Array[B], start: Int): xs.type = copyToArray[B](xs, start, length)
 

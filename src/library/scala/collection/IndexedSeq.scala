@@ -8,7 +8,7 @@ import Searching.{SearchResult, Found, InsertionPoint}
 
 /** Base trait for indexed sequences that have efficient `apply` and `length` */
 trait IndexedSeq[+A] extends Seq[A] with IndexedSeqOps[A, IndexedSeq, IndexedSeq[A]] {
-  override protected[this] def stringPrefix: String = "IndexedSeq"
+  override protected[this] def className: String = "IndexedSeq"
 }
 
 @SerialVersionUID(3L)

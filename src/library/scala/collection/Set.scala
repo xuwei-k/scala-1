@@ -30,7 +30,7 @@ trait Set[A]
 
   def empty: IterableCC[A] = iterableFactory.empty
 
-  override protected[this] def stringPrefix: String = "Set"
+  override protected[this] def className: String = "Set"
 
   override def toString(): String = super[Iterable].toString() // Because `Function1` overrides `toString` too
 }

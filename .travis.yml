@@ -17,7 +17,7 @@ jobs:
 
       # full bootstrap and publish
       - stage: build
-        if: type != pull_request
+        if: (type != pull_request) AND (repo == "scala/scala")
         script:
           # see comment in `bootstrap_fun` for details on the procedure
           # env available in each stage
@@ -36,7 +36,7 @@ jobs:
 
       # pull request validation (w/ mini-bootstrap)
       - stage: build
-        if: type = pull_request
+        if: (type = pull_request) OR (repo != "scala/scala")
         script:
           - sbt -warn setupPublishCore generateBuildCharacterPropertiesFile publishLocal
           - STARR=`cat buildcharacter.properties | grep ^maven.version.number | cut -d= -f2` && echo $STARR
@@ -47,10 +47,10 @@ jobs:
         rvm: 2.2
         install: bundle install
         script:
-        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then (cd admin && ./init.sh); fi'
+        - 'if [[ "$TRAVIS_PULL_REQUEST" = "false" && "$TRAVIS_REPO_SLUG" = "scala/scala" ]]; then (cd admin && ./init.sh); fi'
         - bundle exec jekyll build -s spec/ -d build/spec
         after_success:
-        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then ./scripts/travis-publish-spec.sh; fi'
+        - 'if [[ "$TRAVIS_PULL_REQUEST" = "false" && "$TRAVIS_REPO_SLUG" = "scala/scala" ]]; then ./scripts/travis-publish-spec.sh; fi'
 
 env:
   global:

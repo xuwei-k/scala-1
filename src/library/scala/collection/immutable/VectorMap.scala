@@ -21,7 +21,7 @@ import scala.annotation.unchecked.{uncheckedVariance => uV}
   */
 final class VectorMap[K, +V] private[immutable] (
     private[immutable] val fields: Vector[K],
-    private[immutable] val underlying: Map[K, (Int, V)])
+    private[immutable] val underlying: Map[K, V])
     extends AbstractMap[K, V]
     with SeqMap[K, V]
     with MapOps[K, V, VectorMap, VectorMap[K, V]]
@@ -32,11 +32,11 @@ final class VectorMap[K, +V] private[immutable] (
     underlying.get(key) match {
       case Some(oldIndexWithValue) =>
         new VectorMap(fields,
-          underlying.updated(key, (oldIndexWithValue._1, value)))
+          underlying.updated(key, value))
       case None =>
         new VectorMap(
           fields :+ key,
-          underlying.updated(key, (fields.length, value)))
+          underlying.updated(key, value))
     }
   }
 
@@ -52,19 +52,16 @@ final class VectorMap[K, +V] private[immutable] (
 
     override def next(): (K, V) = {
       val field = fieldsIterator.next()
-      (field, underlying(field)._2)
+      (field, underlying(field))
     }
   }
 
-  def get(key: K): Option[V] = underlying.get(key) match {
-    case Some(v) => Some(v._2)
-    case None => None
-  }
+  def get(key: K): Option[V] = underlying.get(key)
 
   def remove(key: K): VectorMap[K, V] = {
     underlying.get(key) match {
-      case Some((index, _)) =>
-        new VectorMap(fields.patch(index, Nil, 1), underlying - key)
+      case Some(_) =>
+        new VectorMap(fields.filterNot(_ == key), underlying - key)
       case _ =>
         this
     }
@@ -84,12 +81,12 @@ final class VectorMap[K, +V] private[immutable] (
 
   override def last: (K, V) = {
     val last = fields.last
-    (last, underlying(last)._2)
+    (last, underlying(last))
   }
 
   override def lastOption: Option[(K, V)] = {
     fields.lastOption match {
-      case Some(last) => Some(last, underlying(last)._2)
+      case Some(last) => Some(last, underlying(last))
       case None => None
     }
   }
@@ -102,43 +99,11 @@ final class VectorMap[K, +V] private[immutable] (
     new VectorMap(fields.init, underlying.remove(fields.last))
   }
 
-  // Only care about content, not ordering for equality
-  override def equals(that: Any): Boolean =
-    that match {
-      case map: Map[K, V] =>
-        (this eq map) ||
-          (this.size == map.size) && {
-            try {
-              var i = 0
-              val _size = size
-              while (i < _size) {
-                val k = fields(i)
-
-                map.get(k) match {
-                  case Some(value) =>
-                    if (!(value == underlying(k)._2)) {
-                      return false
-                    }
-                  case None =>
-                    return false
-                }
-                i += 1
-              }
-              true
-            } catch {
-              case _: ClassCastException => false
-            }
-          }
-      case _ => super.equals(that)
-    }
-
   override def foreach[U](f: ((K, V)) => U): Unit = iterator.foreach(f)
 
   override def keys: Iterable[K] = fields.toIterable
 
-  override def values: Iterable[V] = new Iterable[V] {
-    override def iterator: Iterator[V] = fields.iterator.map(underlying(_)._2)
-  }
+  override def values: Iterable[V] = underlying.values.toSeq
 }
 
 object VectorMap extends MapFactory[VectorMap] {
@@ -146,9 +111,9 @@ object VectorMap extends MapFactory[VectorMap] {
   def empty[K, V]: VectorMap[K, V] =
     new VectorMap[K, V](Vector.empty[K],
       if (VectorMap.useBaseline)
-        OldHashMap.empty[K, (Int, V)]
+        OldHashMap.empty[K, V]
       else
-        HashMap.empty[K, (Int, V)]
+        HashMap.empty[K, V]
     )
 
   def from[K, V](it: collection.IterableOnce[(K, V)]): VectorMap[K, V] =

@@ -171,21 +171,21 @@ object SeqMap extends MapFactory[SeqMap] {
       else {
         // Directly create the elements for performance reasons
         val fields = Vector(key1, key2, key3, key4, key)
-        val underlying: Map[K, (Int, V1)] = if (useBaseline)
+        val underlying: Map[K, V1] = if (useBaseline)
           OldHashMap(
-            (key1, (0, value1)),
-            (key2, (1, value2)),
-            (key3, (2, value3)),
-            (key4, (3, value4)),
-            (key, (4, value))
+            (key1, value1),
+            (key2, value2),
+            (key3, value3),
+            (key4, value4),
+            (key,  value)
           )
         else
           HashMap(
-            (key1, (0, value1)),
-            (key2, (1, value2)),
-            (key3, (2, value3)),
-            (key4, (3, value4)),
-            (key, (4, value))
+            (key1, value1),
+            (key2, value2),
+            (key3, value3),
+            (key4, value4),
+            (key,  value)
           )
         new VectorMap(fields, underlying)
       }

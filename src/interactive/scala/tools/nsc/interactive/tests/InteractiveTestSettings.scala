@@ -57,7 +57,7 @@ trait InteractiveTestSettings extends TestSettings with PresentationCompilerInst
     val str = try File(optsFile).slurp() catch {
       case e: java.io.IOException => ""
     }
-    str.lines.filter(!_.startsWith(CommentStartDelimiter)).mkString(" ")
+    str.lines.toArray.map(_.toString).filter(!_.startsWith(CommentStartDelimiter)).mkString(" ")
   }
 
   override protected def printClassPath(implicit reporter: Reporter): Unit = {

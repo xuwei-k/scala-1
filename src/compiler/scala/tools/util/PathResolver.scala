@@ -34,7 +34,7 @@ object PathResolver {
   }
   implicit class AsLines(val s: String) extends AnyVal {
     // sm"""...""" could do this in one pass
-    def asLines = s.trim.stripMargin.lines.mkLines
+    def asLines = s.trim.stripMargin.lines.toArray.map(_.toString).toList.mkLines
   }
 
   /** pretty print class path */

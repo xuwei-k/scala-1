@@ -10,6 +10,7 @@ package scala
 package runtime
 
 
+import scala.annotation.tailrec
 import scala.collection.{BuildFrom, IterableOps}
 import scala.language.implicitConversions
 
@@ -44,62 +45,75 @@ final class Tuple2Zipped[El1, It1 <: Iterable[El1], El2, It2 <: Iterable[El2]](p
   def map[B, To](f: (El1, El2) => B)(implicit bf: BuildFrom[It1, B, To]): To = {
     val b = bf.newBuilder(coll1)
     b.sizeHint(coll1, 0)
+    val elems1 = coll1.iterator
     val elems2 = coll2.iterator
 
-    for (el1 <- coll1) {
-      if (elems2.hasNext)
-        b += f(el1, elems2.next())
-      else
-        return b.result()
+    def loop(): To = {
+      if (elems1.hasNext && elems2.hasNext) {
+        b += f(elems1.next(), elems2.next())
+        loop()
+      } else {
+        b.result()
+      }
     }
 
-    b.result()
+    loop()
   }
 
   def flatMap[B, To](f: (El1, El2) => IterableOnce[B])(implicit bf: BuildFrom[It1, B, To]): To = {
     val b = bf.newBuilder(coll1)
+    val elems1 = coll1.iterator
     val elems2 = coll2.iterator
 
-    for (el1 <- coll1) {
-      if (elems2.hasNext)
-        b ++= f(el1, elems2.next())
-      else
-        return b.result()
+    def loop(): To = {
+      if (elems1.hasNext && elems2.hasNext) {
+        b ++= f(elems1.next(), elems2.next())
+        loop()
+      } else {
+        b.result()
+      }
     }
 
-    b.result()
+    loop()
   }
 
   def filter[To1, To2](f: (El1, El2) => Boolean)(implicit bf1: BuildFrom[It1, El1, To1], bf2: BuildFrom[It2, El2, To2]): (To1, To2) = {
     val b1 = bf1.newBuilder(coll1)
     val b2 = bf2.newBuilder(coll2)
+    val elems1 = coll1.iterator
     val elems2 = coll2.iterator
 
-    for (el1 <- coll1) {
-      if (elems2.hasNext) {
+    @tailrec
+    def loop(): (To1, To2) = {
+      if (elems1.hasNext && elems2.hasNext) {
+        val el1 = elems1.next()
         val el2 = elems2.next()
         if (f(el1, el2)) {
           b1 += el1
           b2 += el2
         }
+        loop()
+      } else {
+        (b1.result(), b2.result())
       }
-      else return (b1.result(), b2.result())
     }
 
-    (b1.result(), b2.result())
+    loop()
   }
 
   def exists(p: (El1, El2) => Boolean): Boolean = {
+    val elems1 = coll1.iterator
     val elems2 = coll2.iterator
 
-    for (el1 <- coll1) {
-      if (elems2.hasNext) {
-        if (p(el1, elems2.next()))
-          return true
+    @tailrec
+    def loop(): Boolean = {
+      if (elems1.hasNext && elems2.hasNext) {
+        p(elems1.next(), elems2.next()) || loop()
+      } else {
+        false
       }
-      else return false
     }
-    false
+    loop()
   }
 
   def forall(p: (El1, El2) => Boolean): Boolean =
@@ -108,14 +122,17 @@ final class Tuple2Zipped[El1, It1 <: Iterable[El1], El2, It2 <: Iterable[El2]](p
   def iterator: Iterator[(El1, El2)] = coll1.iterator.zip(coll2.iterator)
   override def isEmpty: Boolean = coll1.isEmpty || coll2.isEmpty
   def foreach[U](f: (El1, El2) => U): Unit = {
+    val elems1 = coll1.iterator
     val elems2 = coll2.iterator
 
-    for (el1 <- coll1) {
-      if (elems2.hasNext)
-        f(el1, elems2.next())
-      else
-        return
+    @tailrec
+    def loop(): Unit = {
+      if (elems1.hasNext && elems2.hasNext) {
+        f(elems1.next(), elems2.next())
+        loop()
+      }
     }
+    loop()
   }
 
   override def toString = s"($coll1, $coll2).zipped"

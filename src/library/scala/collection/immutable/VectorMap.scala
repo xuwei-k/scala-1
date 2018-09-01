@@ -3,6 +3,7 @@ package collection
 package immutable
 
 import scala.collection.mutable.{Builder, ImmutableBuilder}
+import scala.annotation.tailrec
 import scala.annotation.unchecked.{uncheckedVariance => uV}
 
 /** This class implements immutable maps using a vector/map-based data structure, which preserves insertion order.
@@ -115,22 +116,22 @@ final class VectorMap[K, +V] private[immutable] (
         (this eq map) ||
           (this.size == map.size) && {
             try {
-              var i = 0
               val _size = size
-              while (i < _size) {
-                val k = fields(i)
-
-                map.get(k) match {
-                  case Some(value) =>
-                    if (!(value == underlying(k)._2)) {
-                      return false
-                    }
-                  case None =>
-                    return false
+              @tailrec
+              def loop(i: Int): Boolean = {
+                if (i < _size) {
+                  val k = fields(i)
+                  map.get(k) match {
+                    case Some(value) =>
+                      (value == underlying(k)._2) && loop(i + 1)
+                    case None =>
+                      false
+                  }
+                } else {
+                  true
                 }
-                i += 1
               }
-              true
+              loop(0)
             } catch {
               case _: ClassCastException => false
             }

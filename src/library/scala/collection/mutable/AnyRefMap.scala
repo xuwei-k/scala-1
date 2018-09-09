@@ -288,7 +288,7 @@ extends AbstractMap[K, V]
     this
   }
 
-  def iterator: Iterator[(K, V)] = new Iterator[(K, V)] {
+  def iterator: Iterator[(K, V)] = new collection.AbstractIterator[(K, V)] {
     private[this] val hz = _hashes
     private[this] val kz = _keys
     private[this] val vz = _values

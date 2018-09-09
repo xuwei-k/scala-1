@@ -355,7 +355,7 @@ extends AbstractMap[Long, V]
     this
   }
 
-  def iterator: Iterator[(Long, V)] = new Iterator[(Long, V)] {
+  def iterator: Iterator[(Long, V)] = new collection.AbstractIterator[(Long, V)] {
     private[this] val kz = _keys
     private[this] val vz = _values
 

@@ -265,7 +265,7 @@ object Pickler {
         p.pickle(wr, x)
       }
     }
-    def unpickle(rd: Lexer): Unpickled[Iterator[T]] = UnpickleSuccess(new Iterator[T] {
+    def unpickle(rd: Lexer): Unpickled[Iterator[T]] = UnpickleSuccess(new collection.AbstractIterator[T] {
       var first = true
       def hasNext = {
         val t = rd.token

@@ -180,7 +180,11 @@ final class Vector[+A] private[immutable] (private[collection] val startIndex: I
     else {
       suffix match {
         case suffix: collection.Iterable[B] =>
-          suffix.size match {
+          suffix.knownSize match {
+            case n if n < 0 =>
+              super.appendedAll(suffix)
+            case 0 =>
+              this
             // Often it's better to append small numbers of elements (or prepend if RHS is a vector)
             case n if n <= TinyAppendFaster || n < (this.size >>> Log2ConcatFaster) =>
               var v: Vector[B] = this
@@ -206,7 +210,11 @@ final class Vector[+A] private[immutable] (private[collection] val startIndex: I
     else {
       prefix match {
         case prefix: collection.Iterable[B] =>
-          prefix.size match {
+          prefix.knownSize match {
+            case n if n < 0 =>
+              super.prependedAll(prefix)
+            case 0 =>
+              this
             case n if n <= TinyAppendFaster || n < (this.size >>> Log2ConcatFaster) =>
               var v: Vector[B] = this
               val it = prefix.toIndexedSeq.reverseIterator

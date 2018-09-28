@@ -650,13 +650,17 @@ abstract class TreeGen {
      * The closure is assigned a transparent position with the point at pos.point and
      * the limits given by pat and body.
      */
-    def makeClosure(pos: Position, pat: Tree, body: Tree): Tree = {
+    def makeClosure(pos: Position, pat: Tree, body: Tree, withFilter: Boolean): Tree = {
       def wrapped  = wrappingPos(List(pat, body))
       def splitpos = (if (pos != NoPosition) wrapped.withPoint(pos.point) else pos).makeTransparent
       matchVarPattern(pat) match {
         case Some((name, tpt)) =>
           Function(
-            List(atPos(pat.pos) { ValDef(Modifiers(PARAM), name.toTermName, tpt, EmptyTree) }),
+            List(atPos(pat.pos) {
+              val v = ValDef(Modifiers(PARAM), name.toTermName, tpt, EmptyTree)
+              if (withFilter) v.updateAttachment(NoWarnAttachment)
+              else v
+            }),
             body) setPos splitpos
         case None =>
           atPos(splitpos) {
@@ -671,7 +675,7 @@ abstract class TreeGen {
       // ForAttachment on the method selection is used to differentiate
       // result of for desugaring from a regular method call
       Apply(Select(qual, meth) setPos qual.pos updateAttachment ForAttachment,
-        List(makeClosure(pos, pat, body))) setPos pos
+        List(makeClosure(pos, pat, body, meth == nme.withFilter))) setPos pos
 
     /* If `pat` is not yet a `Bind` wrap it in one with a fresh name */
     def makeBind(pat: Tree): Tree = pat match {

@@ -93,4 +93,16 @@ trait Anonymous {
   def f2: Int => Int = _ + 1  // no warn placeholder syntax (a fresh name and synthethic parameter)
 
   def g = for (i <- List(1)) yield 42    // warn map.(i => 42)
+
+  // no warn https://github.com/scala/bug/issues/11175
+  def g1 = for {
+    a <- Option(1)
+    b <- Option(2) if a == 1
+  } yield a + b
+
+  // warn
+  def g2 = for {
+    a <- Option(1)
+    b <- Option(2)
+  } yield b
 }

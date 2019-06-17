@@ -97,6 +97,10 @@ class SettingsDescriptor extends SettingsDescriptorModel {
       //TODO
       deprecated = Some("EXPLAIN_ALTERNATIVE").filter(_ => s.helpDescription.toLowerCase.contains("deprecated"))
     )
+  val replaceDefaultValues = Map(
+    ("-javabootclasspath", "Defaults.javaBootClassPath"),
+    ("-javaextdirs", "Defaults.javaExtDirs")
+  )
   def descriptor: String = {
     val grouped = sections.map {
       case (title, predicate, text) =>
@@ -136,7 +140,7 @@ class SettingsDescriptor extends SettingsDescriptorModel {
               element("type", `type`)
               maybe("arg", arg)
               maybe("multiple", multiple)
-              maybe("default", default)
+              maybe("default", replaceDefaultValues.get(option) orElse default)
               maybes("choices", choices,
                 (c: Choice) => element("choice", c.choice, head = true),
                 (c: Choice) => maybe("description", c.description))

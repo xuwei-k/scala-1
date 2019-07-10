@@ -16,53 +16,20 @@ stages:
 jobs:
     include:
 
-      # full bootstrap and publish
-      - stage: build
-        if: type != pull_request
-        script:
-          # see comment in `bootstrap_fun` for details on the procedure
-          # env available in each stage
-          #  - by travis config (see below): secret env vars
-          #  - by `common` script: WORKSPACE, IVY2_DIR, SBT_CMD, integrationRepoUrl
-          #  - by `bootstrap_fun`: publishPrivateTask, ...
-          - set -e
-          - (cd admin && ./init.sh)
-          - source scripts/common
-          - source scripts/bootstrap_fun
-          - determineScalaVersion
-          - removeExistingBuilds $integrationRepoUrl
-          - if [ ! -z "$STARR_REF" ]; then buildStarr; fi
-          - buildLocker
-          - buildQuick
-          - triggerScalaDist
-          - sbt -Dscala.build.compileWithDotty=true library/compile
-
       # pull request validation (w/ mini-bootstrap)
       - stage: build
-        if: type = pull_request
+        os: windows
+        language: bash
+        env: JDK="adopt@1.8.212-04"
+        before_script:
+        - wget "https://raw.githubusercontent.com/DanySK/Gravis-CI/c8f400623d8f756ef7c/.install-jdk-travis.sh"
+        - source .install-jdk-travis.sh
+        - wget https://raw.githubusercontent.com/paulp/sbt-extras/0ee2dae2eba72efb4a464a5ad255e348696ecda7/sbt && chmod +x ./sbt
         script:
-          - set -e
-          - sbt -warn setupPublishCore generateBuildCharacterPropertiesFile headerCheck publishLocal
+          - ./sbt -warn setupPublishCore generateBuildCharacterPropertiesFile headerCheck publishLocal
           - STARR=`cat buildcharacter.properties | grep ^maven.version.number | cut -d= -f2` && echo $STARR
-          - sbt -Dstarr.version=$STARR -warn setupValidateTest test:compile info testAll
-          - sbt -Dscala.build.compileWithDotty=true library/compile
-
-      # build the spec using jekyll
-      - stage: build
-        language: ruby
-        install:
-          - rvm install 2.2
-          - rvm use 2.2
-          - rvm info
-          - ruby -v
-          - bundler --version
-          - bundle install
-        script:
-          - set -e
-          - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then (cd admin && ./init.sh); fi'
-          - bundle exec jekyll build -s spec/ -d build/spec
-        after_success:
-          - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then ./scripts/travis-publish-spec.sh; fi'
+          - ./sbt -Dstarr.version=$STARR -warn setupValidateTest test:compile info testAll
+          - ./sbt -Dscala.build.compileWithDotty=true library/compile
 
 env:
   global:

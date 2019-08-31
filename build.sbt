@@ -398,7 +398,7 @@ lazy val library = configureAsSubproject(project)
     // Remove the dependency on "forkjoin" from the POM because it is included in the JAR:
     pomDependencyExclusions += ((organization.value, "forkjoin")),
     mimaPreviousArtifacts := mimaReferenceVersion.value.map(organization.value % name.value % _).toSet,
-    mimaCheckDirection := "both"
+    mimaCheckDirection := mima013.MimaCheckDirection.Both
   )
   .settings(filterDocSources("*.scala" -- (regexFileFilter(".*/runtime/.*\\$\\.scala") ||
                                            regexFileFilter(".*/runtime/ScalaRunTime\\.scala") ||
@@ -425,7 +425,7 @@ lazy val reflect = configureAsSubproject(project)
       "/project/packaging" -> <packaging>jar</packaging>
     ),
     mimaPreviousArtifacts := mimaReferenceVersion.value.map(organization.value % name.value % _).toSet,
-    mimaCheckDirection := "both"
+    mimaCheckDirection := mima013.MimaCheckDirection.Both
   )
   .dependsOn(library)
 
@@ -958,8 +958,8 @@ lazy val root: Project = (project in file("."))
     testPosPres := (testOnly in IntegrationTest in testP).toTask(" -- pos presentation").result.value,
 
     testRest := ScriptCommands.sequence[Result[Unit]](List(
-          (mimaReportBinaryIssues in library).result,
-          (mimaReportBinaryIssues in reflect).result,
+          (mimaReportBinaryIssues in library).map(_ => ()).result,
+          (mimaReportBinaryIssues in reflect).map(_ => ()).result,
           (Keys.test in Test in junit).result,
           (Keys.test in Test in scalacheck).result,
           (testOnly in IntegrationTest in testP).toTask(" -- neg jvm").result,
@@ -981,8 +981,8 @@ lazy val root: Project = (project in file("."))
         (testOnly in IntegrationTest in testP).toTask(" -- --srcpath scaladoc").result map (_ -> "partest --srcpath scaladoc"),
         (Keys.test in Test in osgiTestFelix).result map (_ -> "osgiTestFelix/test"),
         (Keys.test in Test in osgiTestEclipse).result map (_ -> "osgiTestEclipse/test"),
-        (mimaReportBinaryIssues in library).result map (_ -> "library/mimaReportBinaryIssues"),
-        (mimaReportBinaryIssues in reflect).result map (_ -> "reflect/mimaReportBinaryIssues"),
+        (mimaReportBinaryIssues in library).map(_ => ()).result map (_ -> "library/mimaReportBinaryIssues"),
+        (mimaReportBinaryIssues in reflect).map(_ => ()).result map (_ -> "reflect/mimaReportBinaryIssues"),
         (compile in Compile in bench).map(_ => ()).result map (_ -> "bench/compile"),
         Def.task(()).dependsOn( // Run these in parallel:
           doc in Compile in library,

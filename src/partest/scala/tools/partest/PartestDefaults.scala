@@ -22,7 +22,10 @@ object PartestDefaults {
   def sourcePath  = prop("partest.srcdir")      getOrElse "files"
   def javaCmd     = prop("partest.javacmd")     orElse    jdkexec("java")  getOrElse "java"
   def javacCmd    = prop("partest.javac_cmd")   orElse    jdkexec("javac") getOrElse "javac"
-  def javaOpts    = prop("partest.java_opts")   getOrElse  ""     // opts when running java during tests
+  def javaOpts    = "--enable-preview --release 15" // prop("partest.java_opts")   getOrElse  ""     // opts when running java during tests
+  println("*" * 100)
+  println(javaOpts)
+  println("*" * 100)
   def scalacOpts  = prop("partest.scalac_opts") getOrElse  ""
 
   def testBuild   = prop("partest.build")

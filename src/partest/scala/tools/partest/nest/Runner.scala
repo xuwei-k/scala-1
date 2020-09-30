@@ -149,7 +149,7 @@ class Runner(val testInfo: TestInfo, val suiteRunner: AbstractRunner) {
 
     val classpath = joinPaths(extraClasspath ++ testClassPath)
 
-    javaCmdPath +: (
+    val xxx = javaCmdPath +: (
       (suiteRunner.javaOpts.split(' ') ++ extraJavaOptions ++ javaopts).filter(_ != "").toList ++ Seq(
         "-classpath",
         join(outDir.toString, classpath)
@@ -160,6 +160,10 @@ class Runner(val testInfo: TestInfo, val suiteRunner: AbstractRunner) {
         "jvm"
       )
     )
+    println("-" * 100)
+    println(xxx)
+    println("-" * 100)
+    xxx
   }
 
   def propertyOptions(fork: Boolean): List[(String, String)] = {

@@ -48,6 +48,9 @@ final class StringBuilder(val underlying: java.lang.StringBuilder) extends Abstr
 
   def this() = this(new java.lang.StringBuilder)
 
+  // https://github.com/scala/bug/issues/12172
+  override def isEmpty = underlying.isEmpty
+
   /** Constructs a string builder with no characters in it and an
     *  initial capacity specified by the `capacity` argument.
     *

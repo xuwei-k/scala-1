@@ -912,6 +912,11 @@ abstract class ClassfileParser(reader: ReusableInstance[ReusableDataReader]) {
           }
           in.skip(attrLen)
 
+        case tpnme.PermittedSubclassesATTR =>
+          log(s"$sym is Java Sealed")
+          sym setFlag JAVA_SEALED
+          in.skip(attrLen)
+
         case _ =>
           in.skip(attrLen)
       }

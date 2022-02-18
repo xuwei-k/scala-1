@@ -95,11 +95,11 @@ sealed abstract class Node {
 //   }
 object Node        { def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] = Some((n.tpe, n.tpl)) }
 object ClassNode   { def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] = if (n.isClassNode)   Some((n.tpe, n.tpl)) else None }
-object TraitNode   { def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] = if (n.isTraitNode)   Some((n.tpe, n.tpl)) else None }
+
 object TypeNode    { def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] = if (n.isTypeNode)    Some((n.tpe, n.tpl)) else None }
-object ObjectNode  { def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] = if (n.isObjectNode)  Some((n.tpe, n.tpl)) else None }
+
 object OutsideNode { def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] = if (n.isOutsideNode) Some((n.tpe, n.tpl)) else None }
-object OtherNode   { def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] = if (n.isOtherNode)   Some((n.tpe, n.tpl)) else None }
+
 
 
 

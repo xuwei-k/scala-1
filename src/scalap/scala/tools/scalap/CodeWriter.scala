@@ -27,19 +27,15 @@ class CodeWriter(writer: Writer) {
 
   def getWriter = writer
 
-  def getIndentLevel = level
+  
 
-  def setIndentLevel(level: Int): CodeWriter = {
-    this.level = level
-    this
-  }
+  
 
-  def getIndentWidth = if (step == null) -1 else step.length()
+  
 
-  def setIndentWidth(width: Int): CodeWriter =
-    setIndentString(List.fill(width)(' ').mkString)
+  
 
-  def getIndentString = step
+  
 
   def setIndentString(step: String): CodeWriter = {
     this.step = step

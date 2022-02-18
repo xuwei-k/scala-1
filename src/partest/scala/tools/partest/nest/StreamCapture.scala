@@ -29,10 +29,7 @@ object StreamCapture {
   }
 
   /** Set err to out. */
-  def redirErr[A](body: => A): A = savingSystem {
-    System.setOut(System.err)
-    body
-  }
+  
 
   def capturingOutErr[A](output: OutputStream)(body: => A): A = {
     val charset = Charset.defaultCharset()

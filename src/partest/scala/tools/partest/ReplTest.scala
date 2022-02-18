@@ -145,12 +145,7 @@ abstract class SessionTest extends ReplTest  {
   def prompt = "scala> "
 
   /** When overriding show, facilitate the usual check, comparing session to eval result. */
-  def checkSession(): Unit = {
-    val evaled = eval().toList
-    val wanted = expected.toList
-    if (evaled.size != wanted.size) Console.println(s"Expected ${wanted.size} lines, got ${evaled.size}")
-    if (evaled != wanted) Console.print(nest.FileManager.compareContents(wanted, evaled, "expected", "actual"))
-  }
+  
 }
 object SessionTest {
   // \R for line break since Java 8

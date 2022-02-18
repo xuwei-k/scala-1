@@ -58,7 +58,7 @@ class ConsoleLog(colorEnabled: Boolean) {
     print(message + "\n")
   }
 
-  def echoSkipped(msg: String) = echo(yellow(msg))
+  
   def echoPassed(msg: String)  = echo(bold(green(msg)))
   def echoFailed(msg: String)  = echo(bold(red(msg)))
   def echoMixed(msg: String)   = echo(bold(yellow(msg)))

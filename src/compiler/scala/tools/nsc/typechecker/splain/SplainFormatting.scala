@@ -196,10 +196,7 @@ trait SplainFormatting extends SplainFormatters {
 
   def isAux(tpe: Type) = ctorNames(tpe).lastOption.contains("Aux")
 
-  def formatRefinement(sym: Symbol) = {
-    if (sym.hasRawInfo) s"$sym = ${showType(sym.rawInfo)}"
-    else sym.toString
-  }
+  
 
   def formatAuxSimple(tpe: Type): (List[String], String) = {
     val names = ctorNames(tpe)
@@ -239,10 +236,7 @@ trait SplainFormatting extends SplainFormatters {
       case (_, _)                                           => Nil
     }
 
-    def ownerPath: List[String] = {
-      val parts = sym.ownerChain.reverse.map(_.name.decodedName.toString)
-      parts.splitAt(Math.max(0, parts.size - 1))._1
-    }
+    
 
     def shortName: String = tt.safeToString.stripPrefix(tt.prefixString.split('.').dropRight(1).mkString(".") + ".")
   }
@@ -308,10 +302,7 @@ trait SplainFormatting extends SplainFormatters {
 
   def bracket[A](params: List[A]) = params.mkString("[", ", ", "]")
 
-  def formatFunction(args: List[String]) = {
-    val (params, returnt) = args.splitAt(args.length - 1)
-    s"${showTuple(params)} => ${showTuple(returnt)}"
-  }
+  
 
   def decideBreak(flat: FlatType, broken: => BrokenType): TypeRepr =
     if (flat.flat.length > breakInfixLength) broken
@@ -493,8 +484,7 @@ trait SplainFormatting extends SplainFormatters {
   def formatImplicitChainTreeFull(chain: List[ImplicitError]): List[String] =
     formatIndentTree(chain, chain.headOption.map(_.nesting).getOrElse(0))
 
-  def formatImplicitChainFlat(chain: List[ImplicitError]): List[String] =
-    chain.map(formatNestedImplicit).flatMap { case (h, t, _) => h :: t }
+  
 
   def formatImplicitChain(chain: List[ImplicitError]): List[String] = {
     val compact = if (settings.VimplicitsVerboseTree) None else formatImplicitChainTreeCompact(chain)

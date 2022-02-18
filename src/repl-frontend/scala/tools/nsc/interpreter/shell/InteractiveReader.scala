@@ -42,8 +42,7 @@ trait InteractiveReader {
     else readOneLine(prompt)
     */
 
-  @deprecated("No longer used", "2.13.1")
-  def initCompletion(completion: Completion): Unit = ()
+  
 
   /*
    * Closes the underlying resource created by the reader.
@@ -53,10 +52,7 @@ trait InteractiveReader {
 
 object InteractiveReader {
   val msgEINTR = "Interrupted system call"
-  def restartSysCalls[R](body: => R, reset: => Unit): R =
-    try body catch {
-      case e: IOException if e.getMessage == msgEINTR => reset ; body
-    }
+  
 
   def apply(): InteractiveReader = SimpleReader()
 }

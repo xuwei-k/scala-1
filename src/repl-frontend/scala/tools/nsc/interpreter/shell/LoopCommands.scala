@@ -164,12 +164,7 @@ trait LoopCommands {
     def apply(line: String): Result = f(line)
   }
 
-  class VarArgsCmd(name: String, argWord: String, help: String, detailedHelp: Option[String],
-      f: List[String] => Result) extends LoopCommand(name, help, detailedHelp) {
-    override def usage = argWord
-    def apply(line: String): Result = apply(words(line))
-    def apply(args: List[String]) = f(args)
-  }
+  
 
   // the result of a single command
   case class Result(keepRunning: Boolean, lineToRecord: Option[String])

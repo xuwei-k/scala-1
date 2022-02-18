@@ -64,6 +64,6 @@ object DiagramStats {
   def addModelTime(ms: Long) = modelTrack.addTime(ms)
   def addDotGenerationTime(ms: Long) = dotGenTrack.addTime(ms)
 
-  def addBrokenImage(): Unit = brokenImages += 1
-  def addFixedImage(): Unit = fixedImages += 1
+  
+  
 }

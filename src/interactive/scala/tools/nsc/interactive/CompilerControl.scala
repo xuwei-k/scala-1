@@ -61,7 +61,7 @@ trait CompilerControl { self: Global =>
   /** Return the compilation unit attached to a source file, or None
    *  if source is not loaded.
    */
-  def getUnitOf(s: SourceFile): Option[RichCompilationUnit] = getUnit(s)
+  
 
   /** Run operation `op` on a compilation unit associated with given `source`.
    *  If source has a loaded compilation unit, this one is passed to `op`.
@@ -78,11 +78,7 @@ trait CompilerControl { self: Global =>
   /** Returns the top level classes and objects that were deleted
    * in the editor since last time recentlyDeleted() was called.
    */
-  def recentlyDeleted(): List[Symbol] = deletedTopLevelSyms.synchronized {
-    val result = deletedTopLevelSyms
-    deletedTopLevelSyms.clear()
-    result.toList
-  }
+  
 
   /** Locate smallest tree that encloses position
    *  @note Pre-condition: Position must be loaded
@@ -120,9 +116,7 @@ trait CompilerControl { self: Global =>
   /** Removes source files and toplevel symbols, and issues a new typer run.
    *  Returns () to syncvar `response` on completion.
    */
-  def askFilesDeleted(sources: List[SourceFile], response: Response[Unit]) = {
-    postWorkItem(new FilesDeletedItem(sources, response))
-  }
+  
 
   /** Sets sync var `response` to the smallest fully attributed tree that encloses position `pos`.
    *  Note: Unlike for most other ask... operations, the source file belonging to `pos` needs not be loaded.
@@ -136,9 +130,7 @@ trait CompilerControl { self: Global =>
    *        is interrupted while typing the same `source`.
    *  @see  scala/bug#6578
    */
-  @deprecated("Use `askLoadedTyped` instead to avoid race conditions in the typechecker", "2.10.1")
-  def askType(source: SourceFile, forceReload: Boolean, response: Response[Tree]) =
-    postWorkItem(new AskTypeItem(source, forceReload, response))
+  
 
   /** Sets sync var `response` to the position of the definition of the given link in
    *  the given sourcefile.
@@ -190,8 +182,7 @@ trait CompilerControl { self: Global =>
   /** Asks to do unit corresponding to given source file on present and subsequent type checking passes.
    *  If the file is in the 'crashedFiles' ignore list it is removed and typechecked normally.
    */
-  def askToDoFirst(source: SourceFile) =
-    postWorkItem(new AskToDoFirstItem(source))
+  
 
   /** If source is not yet loaded, loads it, and starts a new run, otherwise
    * continues with current pass.
@@ -214,12 +205,7 @@ trait CompilerControl { self: Global =>
    *  In both cases, set response to parsed (and possibly typechecked) tree.
    *  @param keepSrcLoaded If set to `true`, source file will be kept as a loaded unit afterwards.
    */
-  def askStructure(keepSrcLoaded: Boolean)(source: SourceFile, response: Response[Tree]) = {
-    getUnit(source) match {
-      case Some(_) => askLoadedTyped(source, keepSrcLoaded, response)
-      case None => askParsedEntered(source, keepSrcLoaded, response)
-    }
-  }
+  
 
   /** Set sync var `response` to the parse tree of `source` with all top-level symbols entered.
    *  @param source       The source file to be analyzed
@@ -235,7 +221,7 @@ trait CompilerControl { self: Global =>
   /** Cancels current compiler run and start a fresh one where everything will be re-typechecked
    *  (but not re-loaded).
    */
-  def askReset() = scheduler raise (new FreshRunReq)
+  
 
   /** Tells the compile server to shutdown, and not to restart again */
   def askShutdown() = scheduler raise ShutdownReq
@@ -245,9 +231,7 @@ trait CompilerControl { self: Global =>
    *  This method is thread-safe and as such can safely run outside of the presentation
    *  compiler thread.
    */
-  def parseTree(source: SourceFile): Tree = {
-    newUnitParser(new CompilationUnit(source)).parse()
-  }
+  
 
   /** Asks for a computation to be done quickly on the presentation compiler thread */
   def ask[A](op: () => A): A = if (self.onCompilerThread) op() else scheduler doQuickly op
@@ -255,21 +239,7 @@ trait CompilerControl { self: Global =>
   /** Asks for a computation to be done on presentation compiler thread, returning
    *  a response with the result or an exception
    */
-  def askForResponse[A](op: () => A): Response[A] = {
-    val r = new Response[A]
-    if (self.onCompilerThread) {
-      try   { r set op() }
-      catch { case exc: Throwable => r raise exc }
-      r
-    } else {
-      val ir = scheduler askDoQuickly op
-      ir onComplete {
-        case Left(result) => r set result
-        case Right(exc)   => r raise exc
-      }
-      r
-    }
-  }
+  
 
   def onCompilerThread = Thread.currentThread == compileRunner
 

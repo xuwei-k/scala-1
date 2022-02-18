@@ -190,9 +190,7 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
   }
 
   // used when a phase is disabled
-  object noopTransformer extends AstTransformer {
-    override def transformUnit(unit: CompilationUnit): Unit = {}
-  }
+  
 
   override protected def xtransform(transformer: super.Transformer, tree: Tree): Tree = tree match {
     case DocDef(comment, definition) =>

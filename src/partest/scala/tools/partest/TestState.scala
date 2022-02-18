@@ -25,7 +25,7 @@ sealed abstract class TestState {
 
   def identAndReason = testIdent + reasonString
   def status         = s"$what - $identAndReason"
-  def longStatus     = status + transcriptString
+  
   def reasonString   = if (reason == "") "" else s"  [$reason]"
 
   def shortStatus    = if (isOk) "ok" else "!!"

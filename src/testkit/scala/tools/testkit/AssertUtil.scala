@@ -59,8 +59,7 @@ object AssertUtil {
   }
 
   private def dump(s: String) = hexdump(s).mkString("\n")
-  def assertEqualStrings(expected: String)(actual: String) =
-    assert(expected == actual, s"Expected:\n${dump(expected)}\nActual:\n${dump(actual)}")
+  
 
   private final val timeout = 60 * 1000L                 // wait a minute
 
@@ -98,9 +97,7 @@ object AssertUtil {
 
   /** Elapsed duration.
    */
-  def withElapsed[A](f: Duration => Unit)(body: => A): A = timed(body).pipe {
-    case (result, duration) => f(duration) ; result
-  }
+  
 
   /** Check that throwable T (or a subclass) was thrown during evaluation of `body`,
    *  and that its message satisfies the `checkMessage` predicate.
@@ -128,10 +125,10 @@ object AssertUtil {
         throw ae
     }
 
-  def assertCond[A](x: A)(pf: PartialFunction[A, Boolean]): Unit    = assertTrue(PartialFunction.cond(x)(pf))
-  def assertCondNot[A](x: A)(pf: PartialFunction[A, Boolean]): Unit = assertFalse(PartialFunction.cond(x)(pf))
+  
+  
 
-  def assertFails[U](checkMessage: String => Boolean)(body: => U): Unit = assertThrows[AssertionError](body, checkMessage)
+  
 
   /** JUnit-style assertion for `IterableLike.sameElements`.
    */
@@ -148,34 +145,7 @@ object AssertUtil {
 
   /** Value is not strongly reachable from roots after body is evaluated.
    */
-  def assertNotReachable[A <: AnyRef](a: => A, roots: AnyRef*)(body: => Unit): Unit = {
-    val wkref = new WeakReference(a)
-    // fail if following strong references from root discovers referent. Quit if ref is empty.
-    def assertNoRef(root: AnyRef): Unit = {
-      val seen  = new IdentityHashMap[AnyRef, Unit]
-      val stack = mutable.Stack.empty[AnyRef]
-      def loop(): Unit = if (wkref.nonEmpty && stack.nonEmpty) {
-        val o: AnyRef = stack.pop()
-        if (o != null && !seen.containsKey(o)) {
-          seen.put(o, ())
-          assertFalse(s"Root $root held reference $o", o eq wkref.get)
-          o match {
-            case a: Array[AnyRef] =>
-              a.foreach(e => if (!e.isInstanceOf[Reference[_]]) stack.push(e))
-            case _ =>
-              for (f <- o.getClass.allFields)
-                if (!Modifier.isStatic(f.getModifiers) && !f.getType.isPrimitive && !classOf[Reference[_]].isAssignableFrom(f.getType))
-                  stack.push(f.follow(o))
-          }
-        }
-        loop()
-      }
-      stack.push(root)
-      loop()
-    }
-    body
-    roots.foreach(assertNoRef)
-  }
+  
 
   /** Assert no new threads, with some margin for arbitrary threads to exit. */
   def assertZeroNetThreads(body: => Unit): Unit = {
@@ -289,9 +259,9 @@ object AssertUtil {
   final case object Fast extends Progress
 
   /** Like Await.ready but return false on timeout, true on completion, throw InterruptedException. */
-  def readyOrNot(awaitable: Awaitable[_]): Boolean = Try(Await.ready(awaitable, TestDuration.Standard)).isSuccess
+  
 
-  def withoutATrace[A](body: => A) = NoTrace(body)
+  
 }
 
 object TestDuration {

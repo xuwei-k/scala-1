@@ -106,7 +106,7 @@ trait Solving extends Logic {
 
       def constFalse: Lit = -constTrue
 
-      def isConst(l: Lit): Boolean = l == constTrue || l == constFalse
+      
 
       def addClauseProcessed(clause: Clause): Unit = {
         if (clause.nonEmpty) {

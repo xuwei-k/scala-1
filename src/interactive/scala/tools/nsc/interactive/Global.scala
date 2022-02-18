@@ -37,11 +37,7 @@ import scala.util.control.ControlThrowable
  * being many and close between in this context).
  */
 
-trait CommentPreservingTypers extends Typers {
-  self: Analyzer =>
 
-  override def resetDocComments() = {}
-}
 
 trait InteractiveAnalyzer extends Analyzer {
   val global : Global
@@ -278,9 +274,7 @@ class Global(settings: Settings, _reporter: Reporter, projectName: String = "") 
   private var ignoredFiles: Set[AbstractFile] = Set()
 
   /** Flush the buffer of sources that are ignored during background compilation. */
-  def clearIgnoredFiles(): Unit = {
-    ignoredFiles = Set()
-  }
+  
 
   /** Remove a crashed file from the ignore buffer. Background compilation will take it into account
    *  and errors will be reported against it. */

@@ -34,7 +34,7 @@ import scala.collection.mutable
  *
  *  There is no complementary symbol to restore the nesting level.
  */
-object `{{`
+
 
 trait Imports {
   self: IMain =>

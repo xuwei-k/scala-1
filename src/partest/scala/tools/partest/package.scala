@@ -140,13 +140,7 @@ package object partest {
 
   def basename(name: String): String = Path(name).stripExtension
 
-  def findProgram(name: String): Option[File] = {
-    val pathDirs = sys.env("PATH") match {
-      case null => List("/usr/local/bin", "/usr/bin", "/bin")
-      case path => path.split("[:;]").filterNot(_ == "").toList
-    }
-    pathDirs.iterator map (d => new File(d, name)) find (_.canExecute)
-  }
+  
 
   def now = (new java.util.Date).toString
   def elapsedString(millis: Long): String = {

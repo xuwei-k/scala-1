@@ -50,27 +50,20 @@ abstract class BytecodeTest {
   def main(args: Array[String]): Unit = show()
 
   // asserts
-  def sameBytecode(methA: MethodNode, methB: MethodNode) = {
-    val isa = instructionsFromMethod(methA)
-    val isb = instructionsFromMethod(methB)
-    if (isa == isb) println("bytecode identical")
-    else diffInstructions(isa, isb)
-  }
+  
 
   // Do these classes have all the same methods, with the same names, access,
   // descriptors and generic signatures? Method bodies are not considered, and
   // the names of the classes containing the methods are substituted so they do
   // not appear as differences.
-  def sameMethodAndFieldSignatures(clazzA: ClassNode, clazzB: ClassNode) =
-    sameCharacteristics(clazzA, clazzB)(_.characteristics)
+  
 
   // Same as sameMethodAndFieldSignatures, but ignoring generic signatures.
   // This allows for methods which receive the same descriptor but differing
   // generic signatures. In particular, this happens with value classes,
   // which get a generic signature where a method written in terms of the
   // underlying values does not.
-  def sameMethodAndFieldDescriptors(clazzA: ClassNode, clazzB: ClassNode) =
-    sameCharacteristics(clazzA, clazzB)(_.erasedCharacteristics)
+  
 
   private def sameCharacteristics(clazzA: ClassNode, clazzB: ClassNode)(f: AsmNode[_] => String): Boolean = {
     val ms1 = clazzA.fieldsAndMethods.toIndexedSeq
@@ -99,13 +92,7 @@ abstract class BytecodeTest {
    *
    * For the `similar` function, you probably want to pass [[scala.tools.testkit.ASMConverters.equivalentBytecode]].
    */
-  def similarBytecode(methA: MethodNode, methB: MethodNode, similar: (List[Instruction], List[Instruction]) => Boolean) = {
-    val isa = instructionsFromMethod(methA)
-    val isb = instructionsFromMethod(methB)
-    if (isa == isb) println("bytecode identical")
-    else if (similar(isa, isb)) println("bytecode similar")
-    else diffInstructions(isa, isb)
-  }
+  
 
   def diffInstructions(isa: List[Instruction], isb: List[Instruction]) = {
     val len = Math.max(isa.length, isb.length)
@@ -132,15 +119,7 @@ abstract class BytecodeTest {
     classNode.methods.asScala.find(_.name == name) getOrElse
       sys.error(s"Didn't find method '$name' in class '${classNode.name}'")
 
-  protected def loadClassNode(name: String, skipDebugInfo: Boolean = true): ClassNode = {
-    val classBytes: InputStream = classpath.findClassFile(name).map(_.input)
-      .getOrElse(sys.error(s"failed to load class '$name'; classpath = $classpath"))
-
-    val cr = new ClassReader(classBytes)
-    val cn = new ClassNode()
-    cr.accept(cn, if (skipDebugInfo) ClassReader.SKIP_DEBUG else 0)
-    cn
-  }
+  
 
   protected lazy val classpath: scala.tools.nsc.util.ClassPath = {
     import scala.tools.nsc.classpath.AggregateClassPath
@@ -159,26 +138,5 @@ object BytecodeTest {
   /** Parse `file` as a class file, transforms the ASM representation with `f`,
    *  and overwrites the original file.
    */
-  def modifyClassFile(file: JFile)(f: ClassNode => ClassNode): Unit = {
-    val rfile = new reflect.io.File(file)
-    def readClass: ClassNode = {
-      val cr = new ClassReader(rfile.toByteArray())
-      val cn = new ClassNode()
-      cr.accept(cn, 0)
-      cn
-    }
-
-    def writeClass(cn: ClassNode): Unit = {
-      val writer = new ClassWriter(0)
-      cn.accept(writer)
-      val os = rfile.bufferedOutput()
-      try {
-        os.write(writer.toByteArray)
-      } finally {
-        os.close()
-      }
-    }
-
-    writeClass(f(readClass))
-  }
+  
 }

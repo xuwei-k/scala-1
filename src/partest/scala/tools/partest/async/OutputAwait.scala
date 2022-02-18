@@ -58,34 +58,5 @@ object Output {
   }
 }
 
-abstract class OutputStateMachine extends AsyncStateMachine[Output[AnyRef], Option[AnyRef]] {
-  private var written = collection.immutable.HashMap[String, Vector[Any]]()
-  var result$async: Output[AnyRef] = _
 
-  // FSM translated method
-  def apply(tr$async: Option[AnyRef]): Unit
-
-  // Required methods
-  private[this] var state$async: Int = 0
-  protected def state: Int = state$async
-  protected def state_=(s: Int): Unit = state$async = s
-  protected def completeFailure(t: Throwable): Unit = throw t
-  protected def completeSuccess(value: AnyRef): Unit = result$async = Output(Some(value), written)
-  protected def onComplete(f: Output[AnyRef]): Unit = ???
-  protected def getCompleted(f: Output[AnyRef]): Option[AnyRef] = {
-    written = Output.mergeMultiMap(written, f.written)
-    f.value
-  }
-  protected def tryGet(tr: Option[AnyRef]): AnyRef = tr match {
-    case Some(value) =>
-      value.asInstanceOf[AnyRef]
-    case None =>
-      result$async = Output(None, written)
-      this // sentinel value to indicate the dispatch loop should exit.
-  }
-  def start(): Output[AnyRef] = {
-    apply(None)
-    result$async
-  }
-}
 

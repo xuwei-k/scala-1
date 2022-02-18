@@ -38,7 +38,7 @@ trait Typers extends Adaptations with Tags with TypersTracking with PatternTyper
   final def forArgMode(fun: Tree, mode: Mode) =
     if (treeInfo.isSelfOrSuperConstrCall(fun)) mode | SCCmode else mode
 
-  final val shortenImports = false
+  
 
   // All typechecked RHS of ValDefs for right-associative operator desugaring
   private val rightAssocValDefs = new mutable.AnyRefMap[Symbol, Tree]
@@ -230,10 +230,7 @@ trait Typers extends Adaptations with Tags with TypersTracking with PatternTyper
 
     // when type checking during erasure, generate erased types in spots that aren't transformed by erasure
     // (it erases in TypeTrees, but not in, e.g., the type a Function node)
-    def phasedAppliedType(sym: Symbol, args: List[Type]) = {
-      val tp = appliedType(sym, args)
-      if (phase.erasedTypes) erasure.specialScalaErasureFor(sym)(tp) else tp
-    }
+    
 
     def typedDocDef(docDef: DocDef, mode: Mode, pt: Type): Tree =
       typed(docDef.definition, mode, pt)
@@ -1969,11 +1966,7 @@ trait Typers extends Adaptations with Tags with TypersTracking with PatternTyper
     /** For flatMapping a list of trees when you want the DocDefs and Annotated
      *  to be transparent.
      */
-    def rewrappingWrapperTrees(f: Tree => List[Tree]): Tree => List[Tree] = {
-      case dd @ DocDef(comment, defn) => f(defn) map (stat => DocDef(comment, stat) setPos dd.pos)
-      case Annotated(annot, defn)     => f(defn) map (stat => Annotated(annot, stat))
-      case tree                       => f(tree)
-    }
+    
 
     protected def enterSyms(txt: Context, trees: List[Tree]) = {
       var txt0 = txt

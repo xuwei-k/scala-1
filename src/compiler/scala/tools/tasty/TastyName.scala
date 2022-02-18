@@ -180,7 +180,7 @@ sealed abstract class TastyName extends Product with Serializable { self =>
   final override def toString: String = source
 
   final def isObjectName: Boolean = self.isInstanceOf[ObjectName]
-  final def isDefaultName: Boolean = self.isInstanceOf[DefaultName]
+  
   final def isTypeName: Boolean = self.isInstanceOf[TypeName]
   final def isTermName: Boolean = !isTypeName
   final def isEmpty: Boolean = toTermName == Empty

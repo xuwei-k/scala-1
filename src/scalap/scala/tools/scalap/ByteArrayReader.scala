@@ -26,7 +26,7 @@ class ByteArrayReader(content: Array[Byte]) {
 
   /** return byte at offset 'pos'
    */
-  def byteAt(pos: Int): Byte = buf(pos)
+  
 
   /** read a byte
    */

@@ -81,21 +81,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
 
     def tpeTK(tree: Tree): BType = typeToBType(tree.tpe)
 
-    @annotation.unused
-    private def canAssignModuleInClinit(cd: ClassDef, sym: Symbol): Boolean = {
-      import global.definitions._
-      val parentsArePure = claszSymbol.parentSymbols.forall(sym => sym == ObjectClass || isFunctionSymbol(sym) || isAbstractFunctionSymbol(sym) || sym == definitions.SerializableClass)
-      def isPureConstructor(dd: DefDef): Boolean = {
-        dd.rhs match {
-          case Block(stats, _) => treeInfo.isSuperConstrCall(stats.last)
-          case _ => false
-        }
-      }
-      def constructorsArePure = cd.impl.body.iterator.collect {
-        case dd: DefDef if dd.symbol.isConstructor => dd
-      }.forall(isPureConstructor)
-      parentsArePure && constructorsArePure
-    }
+    
 
     /* ---------------- helper utils for generating classes and fields ---------------- */
 
@@ -238,9 +224,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       fv.visitEnd()
     }
 
-    protected def assignModuleInstanceField(meth: asm.MethodVisitor): Unit = {
-      meth.visitFieldInsn(asm.Opcodes.PUTSTATIC, thisBType.internalName, strMODULE_INSTANCE_FIELD, thisBType.descriptor)
-    }
+    
     /*
      * must-single-thread
      */

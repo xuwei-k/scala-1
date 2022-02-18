@@ -119,7 +119,7 @@ trait ShellConfig {
    *  currently mutually exclusive.
    */
   val format = Prop[String]("scala.repl.format")
-  val isPaged: Boolean  = format.isSet && csv(format.get, "paged")
+  
   val isAcross: Boolean = format.isSet && csv(format.get, "across")
   private def csv(p: String, v: String) = p.split(",").contains(v)
 
@@ -134,7 +134,7 @@ trait ShellConfig {
   def isReplDebug: Boolean = debug || isReplTrace
   def repldbg(msg: => String)    = if (isReplDebug) echo(msg)
   def isReplTrace: Boolean = trace
-  def repltrace(msg: => String)  = if (isReplTrace) echo(msg)
+  
 
   def isReplPower: Boolean = power
 

@@ -213,7 +213,7 @@ object ScalaSigEntryParsers extends RulesWithState with MemoisableRules {
 
   val classSymRef = refTo(classSymbol)
   val attribTreeRef = ref
-  val typeLevel = nat
+  
   val typeIndex = nat
 
   lazy val typeEntry: EntryParser[Type] = oneOf(

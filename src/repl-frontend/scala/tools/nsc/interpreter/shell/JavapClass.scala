@@ -368,67 +368,13 @@ object Javap {
 }
 
 /** Loaded reflectively under JDK8 to locate tools.jar and load JavapTask tool. */
-class Javap8(intp0: Repl) extends Javap(intp0) {
-  import scala.tools.util.PathResolver
-  import scala.util.Properties.jdkHome
 
-  private def findToolsJar() = PathResolver.SupplementalLocations.platformTools
-
-  private def addToolsJarToLoader() =
-    findToolsJar() match {
-      case Some(tools) => ScalaClassLoader.fromURLs(Seq(tools.toURL), intp.classLoader)
-      case _           => intp.classLoader
-    }
-  override def loader =
-    Right(addToolsJarToLoader()).filterOrElse(
-      _.tryToInitializeClass[AnyRef](JavapTask.taskClassName).isDefined,
-      s":javap unavailable: no ${JavapTask.taskClassName} or no tools.jar at $jdkHome"
-    )
-  override def task(loader: ClassLoader) = Right(new JavapTask(loader, intp))
-}
 
 /** Loaded reflectively under JDK9 to load JavapTask tool. */
-class Javap9(intp0: Repl) extends Javap(intp0) {
-  override def loader =
-    Right(new ClassLoader(intp.classLoader) with ScalaClassLoader).filterOrElse(
-      _.tryToInitializeClass[AnyRef](JavapTask.taskClassName).isDefined,
-      s":javap unavailable: no ${JavapTask.taskClassName}"
-    )
-  override def task(loader: ClassLoader) = Right(new JavapTask(loader, intp))
-}
+
 
 /** Loaded reflectively under JDK9 to locate ToolProvider. */
-class JavapProvider(intp0: Repl) extends Javap(intp0) {
-  import JavapTool.Input
-  import Javap.filterLines
-  import java.util.Optional
-  //import java.util.spi.ToolProvider
 
-  type ToolProvider = AnyRef { def run(out: PrintWriter, err: PrintWriter, args: Array[String]): Unit }
-
-  override def loader = Right(getClass.getClassLoader)
-
-  private def tool(provider: ToolProvider) = new JavapTool {
-    override def apply(options: Seq[String], filter: Boolean)(inputs: Seq[Input]): List[JpResult] = inputs.map {
-      case Input(target, actual, Success(_)) =>
-        val more = List("-cp", intp.outputDir.file.getAbsoluteFile.toString, actual)
-        val s = stringFromWriter(w => provider.run(w, w, (options ++ more).toArray))
-        JpResult(filterLines(target, s))
-      case Input(_, _, Failure(e)) => JpResult(e.toString)
-    }.toList
-  }
-
-  //ToolProvider.findFirst("javap")
-  override def task(loader: ClassLoader) = {
-    val provider = Class.forName("java.util.spi.ToolProvider", /*initialize=*/ true, loader)
-      .getDeclaredMethod("findFirst", classOf[String])
-      .invoke(null, "javap").asInstanceOf[Optional[ToolProvider]]
-    if (provider.isPresent)
-      Right(tool(provider.get))
-    else
-      Left(s":javap unavailable: provider not found")
-  }
-}
 
 /** The task or tool provider. */
 abstract class JavapTool {

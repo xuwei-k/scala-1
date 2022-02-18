@@ -95,28 +95,7 @@ class Power[ReplValsImpl <: ReplVals : ru.TypeTag: ClassTag](val intp: IMain, re
     }
   }
 
-  class PackageSlurper(packageClass: Symbol) extends SymSlurper {
-    /** Looking for dwindling returns */
-    def droppedEnough() = unseenHistory.size >= 4 && {
-      unseenHistory takeRight 4 sliding 2 forall { it =>
-        val List(a, b) = (it.toList: @unchecked)
-        a > b
-      }
-    }
-
-    def isRecur(sym: Symbol)  = true
-    def isIgnore(sym: Symbol) = sym.isAnonOrRefinementClass || (sym.name.toString contains "$mc")
-    def isKeep(sym: Symbol)   = sym.hasTransOwner(packageClass)
-    def isFinished()          = droppedEnough()
-    def slurp()               = {
-      if (packageClass.isPackageClass)
-        apply(packageClass)
-      else {
-//        repldbg("Not a package class! " + packageClass)
-        Set()
-      }
-    }
-  }
+  
 
 
   def classic = """
@@ -162,7 +141,7 @@ class Power[ReplValsImpl <: ReplVals : ru.TypeTag: ClassTag](val intp: IMain, re
    *  symbol, by only implicitly installing one method, "?", and the rest
    *  of the conveniences exist on that wrapper.
    */
-  trait LowPriorityInternalInfoWrapper { }
+  
   class InternalInfoWrapper[T: ru.TypeTag : ClassTag](value: Option[T] = None) {
     def ? : InternalInfo[T] = new InternalInfo[T](value)
   }
@@ -236,7 +215,7 @@ class Power[ReplValsImpl <: ReplVals : ru.TypeTag: ClassTag](val intp: IMain, re
     def freq[U](p: T => U) = value.groupMapReduce(p)(_ => 1)(_ + _).toList sortBy (-_._2) map (_.swap)
 
     def >>(implicit ord: Ordering[T]): Unit      = pp(_.sorted)
-    def >!(): Unit                               = pp(_.distinct)
+    
     def >(): Unit                                = pp(identity)
   }
 
@@ -272,12 +251,7 @@ class Power[ReplValsImpl <: ReplVals : ru.TypeTag: ClassTag](val intp: IMain, re
       // convenient type application
       def apply(targs: Type*): Type = typeRef(NoPrefix, sym, targs.toList)
     }
-    object symbolSubtypeOrdering extends Ordering[Symbol] {
-      def compare(s1: Symbol, s2: Symbol) =
-        if (s1 eq s2) 0
-        else if (s1 isLess s2) -1
-        else 1
-    }
+    
     implicit lazy val powerSymbolOrdering: Ordering[Symbol] = Ordering[Name] on (_.name)
     implicit lazy val powerTypeOrdering: Ordering[Type]     = Ordering[Symbol] on (_.typeSymbol)
 
@@ -311,7 +285,7 @@ class Power[ReplValsImpl <: ReplVals : ru.TypeTag: ClassTag](val intp: IMain, re
     }
   }
 
-  lazy val rutil: ReplUtilities = new ReplUtilities { }
+  
   lazy val phased: Phased       = new { val global: intp.global.type = intp.global } with Phased { }
 
   def unit(code: String)    = newCompilationUnit(code)

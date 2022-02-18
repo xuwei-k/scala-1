@@ -272,7 +272,7 @@ trait Implicits extends splain.SplainData {
 
     final var useCountArg: Int = 0
     final var useCountView: Int = 0
-    final def useCount(isView: Boolean): Int = if (isView) useCountView else useCountArg
+    
 
     /** Does type `tp` contain an Error type as parameter or result?
      */
@@ -765,8 +765,7 @@ trait Implicits extends splain.SplainData {
       loop(tp0, pt0)
     }
 
-    @annotation.unused
-    private def isImpossibleSubType(tp1: Type, tp2: Type): Boolean = !isPlausiblySubType(tp1, tp2)
+    
     private def isPlausiblySubType(tp1: Type, tp2: Type): Boolean =
       tp1.dealiasWiden match {
         // We only know enough to rule out a subtype relationship if the left hand side is a class.

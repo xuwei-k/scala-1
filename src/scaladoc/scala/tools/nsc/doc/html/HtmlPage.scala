@@ -235,9 +235,7 @@ abstract class HtmlPage extends Page { thisPage =>
     case tpl :: tpls => templateToHtml(tpl) :: sep ++ templatesToHtml(tpls, sep)
   }
 
-  object Image extends Enumeration {
-    val Trait, Class, Type, Object, Package = Value
-  }
+  
 
   def permalink(template: Entity, isSelf: Boolean = true): Elem =
     Span(`class`= "permalink", elems=

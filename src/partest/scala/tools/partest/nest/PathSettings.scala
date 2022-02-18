@@ -38,7 +38,7 @@ class PathSettings(testSourcePath: String) {
   }
 
   // Directory <root> (aka the repo root)
-  val testParent = testRoot.parent
+  
 
   // Directory <root>/test/files or .../scaladoc
   val srcDir = Directory((testRoot / testSourcePath).toCanonical)

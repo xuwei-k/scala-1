@@ -35,20 +35,11 @@ object Arguments {
       this
     }
 
-    def withOptionalBinding(option: String, separator: Char): Parser = {
-      optionalBindings(option) = separator
-      this
-    }
+    
 
-    def withPrefixedArg(prefix: String): Parser = {
-      prefixes += prefix
-      this
-    }
+    
 
-    def withPrefixedBinding(prefix: String, separator: Char): Parser = {
-      prefixedBindings(prefix) = separator
-      this
-    }
+    
 
     def parseBinding(str: String, separator: Char): (String, String) = (str indexOf separator) match {
       case -1   => argumentError(s"missing '$separator' in binding '$str'") ; ("", "")
@@ -155,17 +146,14 @@ class Arguments {
 
   def getArgument(option: String): Option[String] = arguments get option
 
-  def getSuffixes(prefix: String): mutable.Set[String] =
-    prefixes.getOrElse(prefix, new mutable.HashSet)
+  
 
-  def containsSuffix(prefix: String, suffix: String): Boolean =
-    prefixes get prefix exists (set => set(suffix))
+  
 
   def getBindings(tag: String): mutable.Map[String, String] =
     bindings.getOrElse(tag, new mutable.HashMap)
 
-  def getBinding(option: String, key: String): Option[String] =
-    bindings get option flatMap (_ get key)
+  
 
   def getOthers: List[String] = others.toList
 }

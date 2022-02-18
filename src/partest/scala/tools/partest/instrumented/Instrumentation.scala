@@ -54,47 +54,4 @@ object MethodCallTrace {
  * scala/runtime/BoxesRunTime.boxToBoolean(Z)Ljava/lang/Boolean;: 1
  * }}}
  */
-object Instrumentation {
 
-  type Statistics = Map[MethodCallTrace, Int]
-
-  def startProfiling(): Unit = Profiler.startProfiling()
-  def stopProfiling(): Unit = Profiler.stopProfiling()
-  def resetProfiling(): Unit = Profiler.resetProfiling()
-  def isProfiling(): Boolean = Profiler.isProfiling()
-
-  def getStatistics: Statistics = {
-    val isProfiling = Profiler.isProfiling()
-    if (isProfiling) {
-      Profiler.stopProfiling()
-    }
-    val stats = Profiler.getStatistics().asScala.toSeq.map {
-      case (trace, count) => MethodCallTrace(trace.className, trace.methodName, trace.methodDescriptor) -> count.intValue
-    }
-    val res = Map(stats: _*)
-    if (isProfiling) {
-      Profiler.startProfiling()
-    }
-    res
-  }
-
-  val standardFilter: MethodCallTrace => Boolean = t => {
-    // ignore all calls to Console trigger by printing
-    t.className != "scala/Console$" &&
-    // console accesses DynamicVariable, let's discard it too
-    !t.className.startsWith("scala/util/DynamicVariable")
-  }
-
-  // Used in tests.
-  def printStatistics(stats: Statistics = getStatistics, filter: MethodCallTrace => Boolean = standardFilter): Unit = {
-    val stats = getStatistics
-    println("Method call statistics:")
-    val toBePrinted = stats.toSeq.filter(p => filter(p._1)).sortBy(_._1)
-    // <count> <trace>
-    val format = "%5d  %s\n"
-    toBePrinted foreach {
-      case (trace, count) => printf(format, count, trace)
-    }
-  }
-
-}

@@ -74,8 +74,7 @@ class ScalaDocReporter(settings: Settings) extends ConsoleReporter(settings) {
     LinkedHashMap.empty
 
   /** Eliminates messages if both `pos` and `msg` are equal to existing element */
-  def addDelayedMessage(pos: Position, msg: String, print: () => Unit): Unit =
-    delayedMessages += ((pos, msg) -> print)
+  
 
   def printDelayedMessages(): Unit = delayedMessages.values.foreach(_.apply())
 

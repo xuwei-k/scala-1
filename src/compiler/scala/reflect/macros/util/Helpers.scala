@@ -90,15 +90,5 @@ trait Helpers {
    *
    *  @see Metalevels.scala for more information and examples about metalevels
    */
-  def decreaseMetalevel(tp: Type): Type = {
-    val runDefinitions = currentRun.runDefinitions
-    import runDefinitions._
-    transparentShallowTransform(RepeatedParamClass, tp) {
-      case ExprClassOf(runtimeType) => runtimeType
-      // special-casing Nothing here is a useful convention
-      // that enables no-hassle prototyping with `macro ???` and `macro { ...; ??? }`
-      case nothing if nothing =:= NothingTpe => NothingTpe
-      case _ => NoType
-    }
-  }
+  
 }

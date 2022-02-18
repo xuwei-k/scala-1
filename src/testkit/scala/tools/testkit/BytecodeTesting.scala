@@ -48,10 +48,7 @@ class Compiler(val global: Global) {
    * Clear certain per-run caches before a compilation, instead of after. This allows inspecting
    * their content after a compilation run.
    */
-  def keepPerRunCachesAfterRun(caches: List[Clearable]): Unit = {
-    caches foreach global.perRunCaches.unrecordCache
-    keptPerRunCaches = caches
-  }
+  
 
 
   /**
@@ -62,7 +59,7 @@ class Compiler(val global: Global) {
    * NOTE: This method only works if `global.genBCode.bTypes.byteCodeRepository.compilingClasses`
    * was passed to [[keepPerRunCachesAfterRun]].
    */
-  def compiledClassesFromCache = global.genBCode.postProcessor.byteCodeRepository.compilingClasses.valuesIterator.map(_._1).toList.sortBy(_.name)
+  
 
   def resetOutput(): Unit = {
     global.settings.outputDirs.setSingleOutput(new VirtualDirectory("(memory)", None))
@@ -118,52 +115,27 @@ class Compiler(val global: Global) {
     getGeneratedClassfiles(settings.outputDirs.getSingleOutput.get)
   }
 
-  def compileClassesTransformed(scalaCode: String, javaCode: List[(String, String)] = Nil, beforeBackend: global.Tree => global.Tree): List[ClassNode] =
-    readAsmClasses(compileToBytesTransformed(scalaCode, javaCode, beforeBackend))
+  
 
   def compileAsmMethods(code: String, allowMessage: StoreReporter.Info => Boolean = _ => false): List[MethodNode] = {
     val c = compileClass(s"class C { $code }", allowMessage = allowMessage)
     getAsmMethods(c, _ != "<init>")
   }
 
-  def compileAsmMethod(code: String, allowMessage: StoreReporter.Info => Boolean = _ => false): MethodNode = {
-    val List(m) = compileAsmMethods(code, allowMessage): @unchecked
-    m
-  }
+  
 
   def compileMethods(code: String, allowMessage: StoreReporter.Info => Boolean = _ => false): List[Method] =
     compileAsmMethods(code, allowMessage).map(convertMethod)
 
-  def compileMethod(code: String, allowMessage: StoreReporter.Info => Boolean = _ => false): Method = {
-    val List(m) = compileMethods(code, allowMessage = allowMessage): @unchecked
-    m
-  }
+  
 
-  def compileInstructions(code: String, allowMessage: StoreReporter.Info => Boolean = _ => false): List[Instruction] = {
-    val List(m) = compileMethods(code, allowMessage = allowMessage): @unchecked
-    m.instructions
-  }
+  
 }
 
 object BytecodeTesting {
-  def genMethod(flags: Int = Opcodes.ACC_PUBLIC,
-                name: String = "m",
-                descriptor: String = "()V",
-                genericSignature: String = null,
-                throwsExceptions: Array[String] = null,
-                handlers: List[ExceptionHandler] = Nil,
-                localVars: List[LocalVariable] = Nil)(body: Instruction*): MethodNode = {
-    val node = new MethodNode1(flags, name, descriptor, genericSignature, throwsExceptions)
-    applyToMethod(node, Method(body.toList, handlers, localVars))
-    node
-  }
+  
 
-  def wrapInClass(method: MethodNode): ClassNode = {
-    val cls = new ClassNode()
-    cls.visit(Opcodes.V1_6, Opcodes.ACC_PUBLIC, "C", null, "java/lang/Object", null)
-    cls.methods.add(method)
-    cls
-  }
+  
 
   def newCompiler(defaultArgs: String = "-usejavacp", extraArgs: String = ""): Compiler = {
     val compiler = newCompilerWithoutVirtualOutdir(defaultArgs, extraArgs)
@@ -220,9 +192,7 @@ object BytecodeTesting {
     classfiles
   }
 
-  def compileClassesSeparately(codes: List[String], extraArgs: String = "", allowMessage: StoreReporter.Info => Boolean = _ => false, afterEach: AbstractFile => Unit = _ => ()): List[ClassNode] = {
-    readAsmClasses(compileToBytesSeparately(codes, extraArgs, allowMessage, afterEach))
-  }
+  
 
   def readAsmClasses(classfiles: List[(String, Array[Byte])]) = classfiles.map(p => AsmUtils.readClass(p._2)).sortBy(_.name)
 
@@ -310,8 +280,7 @@ object BytecodeTesting {
   def getMethod(c: ClassNode, name: String): Method =
     convertMethod(getAsmMethod(c, name))
 
-  def getInstructions(c: ClassNode, name: String): List[Instruction] =
-    getMethod(c, name).instructions
+  
 
   /**
    * Instructions that match `query` when textified.
@@ -328,27 +297,21 @@ object BytecodeTesting {
    * Instruction that matches `query` when textified.
    * If `query` starts with a `+`, the next instruction is returned.
    */
-  def findInstr(method: MethodNode, query: String): AbstractInsnNode = {
-    val List(i) = findInstrs(method, query): @unchecked
-    i
-  }
+  
 
-  def assertHandlerLabelPostions(h: ExceptionHandler, instructions: List[Instruction], startIndex: Int, endIndex: Int, handlerIndex: Int): Unit = {
-    val insVec = instructions.toVector
-    assertTrue(h.start == insVec(startIndex) && h.end == insVec(endIndex) && h.handler == insVec(handlerIndex))
-  }
+  
 
   import scala.language.implicitConversions
 
   implicit def aliveInstruction(ins: Instruction): (Instruction, Boolean) = (ins, true)
 
   implicit class MortalInstruction(val ins: Instruction) extends AnyVal {
-    def dead: (Instruction, Boolean) = (ins, false)
+    
   }
 
   implicit class listStringLines[T](val l: List[T]) extends AnyVal {
     def stringLines = l.mkString("\n")
   }
 
-  val ignoreDeprecations = (info: StoreReporter.Info) => info.msg.contains("deprecation")
+  
 }

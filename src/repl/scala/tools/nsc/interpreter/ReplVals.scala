@@ -34,7 +34,7 @@ class StdReplVals(final val intp: IMain) extends ReplVals {
   final lazy val global: intp.global.type = intp.global
   final lazy val analyzer                 = global.analyzer
 
-  object treedsl extends { val global: intp.global.type = intp.global } with ast.TreeDSL { }
+  
 
   final lazy val typer = analyzer.newTyper(
     analyzer.rootContext(
@@ -50,7 +50,7 @@ class StdReplVals(final val intp: IMain) extends ReplVals {
     implicit def mkCompilerTypeFromTag(sym: Symbol) = tagFn(sym)
   }
 
-  final lazy val replImplicits = new ReplImplicits
+  
 
   def typed[T <: analyzer.global.Tree](tree: T): T = typer.typed(tree).asInstanceOf[T]
 }

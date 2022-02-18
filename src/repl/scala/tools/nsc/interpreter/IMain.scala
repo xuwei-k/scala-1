@@ -838,7 +838,7 @@ class IMain(val settings: Settings, parentClassLoaderOverride: Option[ClassLoade
     def fullAccessPath = s"${lineRep.readPathInstance}$accessPath"
 
     /** The path of the given member of the wrapping instance. */
-    def fullPath(vname: String) = s"$fullAccessPath.`$vname`"
+    
 
     /** Code to import bound names from previous lines - accessPath is code to
       * append to objectName to access anything bound by request.
@@ -1112,29 +1112,7 @@ class IMain(val settings: Settings, parentClassLoaderOverride: Option[ClassLoade
   def symbolOfTerm(id: String): Symbol   = tryTwice(replScope lookup TermName(id))
   def symbolOfName(id: Name): Symbol     = replScope lookup id
 
-  def runtimeClassAndTypeOfTerm(id: String): Option[(Class[_], Type)] = {
-    // Sadly isAnonymousClass does not return true for scala anonymous
-    // classes because our naming scheme is not doing well against the
-    // jvm's many assumptions.
-    def isScalaAnonymous(clazz: Class[_]) =
-      try clazz.isAnonymousClass || (clazz.getName contains "$anon$")
-      catch { case _: java.lang.InternalError => false }  // good ol' "Malformed class name"
-
-
-    def supers(clazz: Class[_]): List[Class[_]] = {
-      def loop(x: Class[_]): List[Class[_]] = x.getSuperclass match {
-        case null   => List(x)
-        case sc     => x :: (x.getInterfaces.toList flatMap loop) ++ loop(sc)
-      }
-      loop(clazz).distinct
-    }
-
-    classOfTerm(id) flatMap { clazz =>
-      supers(clazz) find (cls => !isScalaAnonymous(cls)) map { nonAnon =>
-        (nonAnon, runtimeTypeOfTerm(id))
-      }
-    }
-  }
+  
 
   def runtimeTypeOfTerm(id: String): Type = {
     def conformingRuntimeType(tpe: Type, clazz: Class[_]): Type = {
@@ -1389,10 +1367,7 @@ class IMain(val settings: Settings, parentClassLoaderOverride: Option[ClassLoade
   def typeToCode(s: String)    = replStrings.typeToCode(s)
 
   // debugging
-  def debugging[T](msg: String)(res: T) = {
-    repldbg(msg + " " + res)
-    res
-  }
+  
 }
 
 /** Utility methods for the Interpreter. */

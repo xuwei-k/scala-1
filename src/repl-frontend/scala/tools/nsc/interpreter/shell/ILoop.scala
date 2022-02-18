@@ -154,34 +154,11 @@ class ILoop(config: ShellConfig, inOverride: BufferedReader = null,
   }
 
   /** Show the history */
-  lazy val historyCommand = new LoopCommand("history", "show the history (optional num is commands to show)", None) {
-    override def usage = "[num]"
-    def defaultLines = 20
-
-    def apply(line: String): Result = {
-      if (history eq NoHistory)
-        return "No history available."
-
-      val xs      = words(line)
-      val current = history.index
-      val count   = try xs.head.toInt catch { case _: Exception => defaultLines }
-      val lines   = history.asStrings takeRight count
-      val offset  = current - lines.size + 1
-
-      for ((line, index) <- lines.zipWithIndex)
-        echo("%3d  %s".format(index + offset, line))
-    }
-  }
+  
 
 
   /** Search the history */
-  def searchHistory(_cmdline: String): Unit = {
-    val cmdline = _cmdline.toLowerCase
-    val offset  = history.index - history.size + 1
-
-    for ((line, index) <- history.asStrings.zipWithIndex ; if line.toLowerCase contains cmdline)
-      echo("%d %s".format(index + offset, line))
-  }
+  
 
   import LoopCommand.{ cmd, nullary, cmdWithHelp }
 

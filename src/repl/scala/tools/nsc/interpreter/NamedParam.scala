@@ -49,4 +49,4 @@ trait NamedParam {
   override def toString = name + ": " + tpe
 }
 
-case class NamedParamClass(name: String, tpe: String, value: Any) extends NamedParam
+

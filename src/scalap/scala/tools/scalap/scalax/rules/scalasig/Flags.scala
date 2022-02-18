@@ -39,12 +39,12 @@ trait Flags {
   def isDeprecated = hasFlag(0x00008000)
 
   def isCovariant = hasFlag(0x00010000)
-  def isCaptured = hasFlag(0x00010000)
+  
 
   def isByNameParam = hasFlag(0x00010000)
   def isContravariant = hasFlag(0x00020000)
   def isLabel = hasFlag(0x00020000) // method symbol is a label. Set by TailCall
-  def isInConstructor = hasFlag(0x00020000) // class symbol is defined in this/superclass constructor
+   // class symbol is defined in this/superclass constructor
 
   def isAbstractOverride = hasFlag(0x00040000)
   def isLocal = hasFlag(0x00080000)
@@ -70,11 +70,11 @@ trait Flags {
   def isOverloaded = hasFlag(0x200000000L)
   def isLifted = hasFlag(0x400000000L)
 
-  def isMixedIn = hasFlag(0x800000000L)
+  
   def isExistential = hasFlag(0x800000000L)
 
-  def isExpandedName = hasFlag(0x1000000000L)
-  def isImplementationClass = hasFlag(0x2000000000L)
-  def isPreSuper = hasFlag(0x2000000000L)
+  
+  
+  
 
 }

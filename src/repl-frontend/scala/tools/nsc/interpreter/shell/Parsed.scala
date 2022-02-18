@@ -31,7 +31,7 @@ class Parsed private (
   def isEscapeChar(ch: Char): Boolean = ch == '\\'
 
   def isEmpty       = args.isEmpty
-  def isUnqualified = args.size == 1
+  
   def isAtStart     = cursor <= 0
 
   private var _verbosity = 0
@@ -42,7 +42,7 @@ class Parsed private (
   def args = toArgs(buffer take cursor).toList
   def bufferHead = args.head
   def headLength = bufferHead.length + 1
-  def bufferTail = new Parsed(buffer drop headLength, cursor - headLength, delimited) withVerbosity verbosity
+  
 
   def prev = new Parsed(buffer, cursor - 1, delimited) withVerbosity verbosity
   def currentChar = buffer(cursor)
@@ -52,7 +52,7 @@ class Parsed private (
     else if (isLastDelimiter) cursor
     else cursor - currentArg.length
 
-  def isFirstDelimiter  = !isEmpty && isDelimiterChar(buffer.head)
+  
   def isLastDelimiter   = !isEmpty && isDelimiterChar(buffer.last)
 
   def isQuoted = false // TODO
@@ -71,7 +71,7 @@ object Parsed {
   def apply(s: String, cursor: Int, delimited: Char => Boolean): Parsed =
     new Parsed(onull(s), cursor, delimited)
 
-  def dotted(s: String, cursor: Int): Parsed = new Parsed(onull(s), cursor, _ == '.')
+  
 
   // a leading dot plus something, but not ".." or "./", ignoring leading whitespace
   private val dotlike = """\s*\.[^./].*""".r

@@ -28,59 +28,7 @@ import scala.tools.nsc.{Global, Settings}
 /** Utilities for testing with javac/scalac without using the actual filesystem,
   * presumably because one doesn't wish to deal with platform idiosyncrasies.
   */
-class VirtualCompiler {
-  /** A java compiler instance that we can use. */
-  lazy val javac = Option(ToolProvider.getSystemJavaCompiler)
-                   .getOrElse(throw new UnsupportedOperationException("No java compiler found in current Java runtime"))
 
-  /** The directory in which are placed classfiles. */
-  lazy val output = new VirtualDirectory("out", maybeContainer = None)
-
-  /** A javac file manager that places classfiles in `output`. */
-  lazy val fileManager: JavaFileManager = {
-    val dflt = javac.getStandardFileManager(null, Locale.ENGLISH, StandardCharsets.UTF_8)
-    new VirtualFileManager(output, dflt)
-  }
-
-  /** A scala compiler. */
-  lazy val scalac: Global = {
-    val settings = new Settings()
-    settings.usejavacp.value = true
-    settings.outputDirs setSingleOutput output
-    new Global(settings) {
-      override lazy val platform = new super.GlobalPlatform() {
-        override val classPath = AggregateClassPath(List(
-          super.classPath,
-          VirtualDirectoryClassPath(output),
-        ))
-      }
-    }
-  }
-
-  def compileJava(sources: (String, String)*): Unit = {
-    val sourcefiles = sources.map {
-      case (filename, content) =>
-        new InMemorySourcefile(new URI("vc:/" + filename), content)
-    }
-    val writer = new OutputStreamWriter(System.out)
-    assert {
-      javac
-        .getTask(writer, fileManager, null, null, null, sourcefiles.asJava)
-        .call()
-    }
-  }
-
-  def compileScala(sources: (String, String)*): Unit = {
-    val run = new scalac.Run()
-    val units = sources.map {
-      case (filename, content) => scalac.newCompilationUnit(content, filename)
-    }
-    run.compileUnits(units.toList, run.parserPhase)
-  }
-
-  def classloader: ClassLoader =
-    new AbstractFileClassLoader(output, getClass.getClassLoader)
-}
 
 final class VirtualFileManager(dir: VirtualDirectory, del: StandardJavaFileManager)
     extends ForwardingJavaFileManager[StandardJavaFileManager](del) {

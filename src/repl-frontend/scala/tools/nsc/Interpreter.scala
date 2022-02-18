@@ -91,47 +91,5 @@ class InterpreterLoop {
   // See also:
   //   - https://github.com/sbt/zinc/blob/1.0/internal/compiler-bridge/src/main/scala/xsbt/InteractiveConsoleInterface.scala
   //   - https://github.com/sbt/zinc/blob/1.0/internal/compiler-bridge/src/main/scala/xsbt/ConsoleInterface.scala
-  @deprecated("Only here to ensure we don't break the sbt interface.", "2.13.0-M2")
-  @annotation.unused
-  private def __SbtConsoleInterface(compilerSettings: Settings, interpreterSettings: Settings, bootClasspathString: String, classpathString: String, initialCommands: String, cleanupCommands: String, loader: ClassLoader, bindNames: Array[String], bindValues: Array[Any]): Unit = {
-    import scala.tools.nsc.interpreter.InteractiveReader
-    import scala.tools.nsc.reporters.Reporter
-
-    //  compilerSettings.bootclasspath.value = bootClasspathString
-    //  compilerSettings.classpath.value = classpathString
-
-    val loop = new InterpreterLoop {
-      override def createInterpreter() = {
-        if (loader eq null) super.createInterpreter()
-        else {
-          in = InteractiveReader.createDefault()
-          interpreter = new Interpreter(settings) {
-            override protected def parentClassLoader =
-              if (loader eq null) super.parentClassLoader else loader
-
-            override protected def newCompiler(settings: Settings, reporter: Reporter) =
-              super.newCompiler(compilerSettings, reporter)
-          }
-        }
-
-        // for 2.8 compatibility
-        final class Compat {
-          def bindValue(id: String, value: Any) =
-            interpreter.bind(id, value.asInstanceOf[AnyRef].getClass.getName, value)
-        }
-        @annotation.unused
-        implicit def compat(a: AnyRef): Compat = new Compat
-
-        interpreter.beQuietDuring(interpreter.bindValue(??? : String, ??? : Any))
-
-        interpreter.interpret(??? : String)
-      }
-
-      override def closeInterpreter(): Unit = {
-        interpreter.interpret(??? : String)
-        super.closeInterpreter()
-      }
-    }
-    loop.main(if (loader eq null) compilerSettings else interpreterSettings)
-  }
+  
 }

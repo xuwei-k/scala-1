@@ -99,8 +99,7 @@ trait ClassPath {
     */
   def asClassPathString: String = ClassPath.join(asClassPathStrings: _*)
   // for compatibility purposes
-  @deprecated("use asClassPathString instead of this one", "2.11.5")
-  def asClasspathString: String = asClassPathString
+  
 
   /** The whole sourcepath in the form of one String.
     */
@@ -117,10 +116,7 @@ trait EfficientClassPath extends ClassPath {
     else ClassPathEntries(packageBuf, classRepBuf)
   }
 }
-trait EfficientClassPathCallBack {
-  def packageEntry(entry: PackageEntry): Unit
-  def classesAndSources(entry: ClassRepresentation): Unit
-}
+
 
 object ClassPath {
   val RootPackage = ""
@@ -193,11 +189,9 @@ object ClassPath {
     resources.asScala.filter(_.getProtocol == "jar").toList
   }
 
-  @deprecated("shim for sbt's compiler interface", since = "2.12.0")
-  sealed abstract class ClassPathContext
+  
 
-  @deprecated("shim for sbt's compiler interface", since = "2.12.0")
-  sealed abstract class JavaContext
+  
 }
 
 trait ClassRepresentation {
@@ -210,8 +204,6 @@ trait ClassRepresentation {
 @deprecated("shim for sbt's compiler interface", since = "2.12.0")
 sealed abstract class DirectoryClassPath
 
-@deprecated("shim for sbt's compiler interface", since = "2.12.0")
-sealed abstract class MergedClassPath
 
-@deprecated("shim for sbt's compiler interface", since = "2.12.0")
-sealed abstract class JavaClassPath
+
+

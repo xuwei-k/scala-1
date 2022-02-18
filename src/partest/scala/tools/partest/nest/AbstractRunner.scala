@@ -112,10 +112,7 @@ class AbstractRunner(val config: RunnerSpec.Config, protected final val testSour
   def verbose(msg: => String): Unit =
     if (verbose) realSysErr.println(msg)
 
-  def showAllJVMInfo(): Unit = {
-    verbose(vmArgString)
-    verbose(allPropertiesString)
-  }
+  
 
   private[this] def comment(s: String) = echo(magenta("# " + s))
 

@@ -57,16 +57,10 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
   }
 
   // wrap the given expression in a SoftReference so it can be gc-ed
-  def mkSoftRef(expr: Tree): Tree = atPos(expr.pos) {
-    val constructor = SoftReferenceClass.info.nonPrivateMember(nme.CONSTRUCTOR).suchThat(_.paramss.flatten.size == 1)
-    NewFromConstructor(constructor, expr)
-  }
+  
 
   // Builds a tree of the form "{ lhs = rhs ; lhs  }"
-  def mkAssignAndReturn(lhs: Symbol, rhs: Tree): Tree = {
-    def lhsRef = if (lhs.owner.isClass) Select(This(lhs.owner), lhs) else Ident(lhs)
-    Block(Assign(lhsRef, rhs) :: Nil, lhsRef)
-  }
+  
 
   def newModule(accessor: Symbol, tpe: Type) = {
     val ps = tpe.typeSymbol.primaryConstructor.info.paramTypes

@@ -29,11 +29,9 @@ object FileManager {
     getLogFile(dir, fileBase, kind)
   }
 
-  def logFileExists(file: File, kind: String) =
-    getLogFile(file, kind).canRead
+  
 
-  def overwriteFileWith(dest: File, file: File) =
-    dest.isFile && copyFile(file, dest)
+  
 
   def copyFile(from: File, dest: File): Boolean = {
     if (from.isDirectory) {
@@ -51,17 +49,11 @@ object FileManager {
     }
   }
 
-  def mapFile(file: File, replace: String => String): Unit = {
-    val f = SFile(file)
+  
 
-    f.printlnAll(f.lines().toList map replace: _*)
-  }
+  
 
-  def jarsWithPrefix(dir: Directory, name: String): Iterator[SFile] =
-    dir.files filter (f => (f hasExtension "jar") && (f.name startsWith name))
-
-  def dirsWithPrefix(dir: Directory, name: String): Iterator[Directory] =
-    dir.dirs filter (_.name startsWith name)
+  
 
   def joinPaths(paths: List[Path]) = ClassPath.join(paths.map(_.getAbsolutePath).distinct: _*)
 
@@ -106,13 +98,7 @@ class FileManager(val testClassLoader: URLClassLoader) {
   def this(testClassPath: List[Path]) =
     this(new URLClassLoader(testClassPath.toArray map (_.toURI.toURL)))
 
-  def distKind = {
-    val p = libraryUnderTest.getAbsolutePath
-    if (p endsWith "build/quick/classes/library") "quick"
-    else if (p endsWith "build/pack/lib/scala-library.jar") "pack"
-    else if (p endsWith "dists/latest/lib/scala-library.jar") "latest"
-    else "installed"
-  }
+  
 
   // find library/reflect/compiler/javaagent jar or subdir under build/$stage/classes/
   private def findArtifact(name: String): Path = {

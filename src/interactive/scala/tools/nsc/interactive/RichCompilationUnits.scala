@@ -38,13 +38,13 @@ trait RichCompilationUnits { self: Global =>
     def isParsed: Boolean = status >= JustParsed
 
     /** Unit has been typechecked, but maybe not in latest runs */
-    def isTypeChecked: Boolean = status > JustParsed
+    
 
     /** Unit has been typechecked and is up to date */
     def isUpToDate: Boolean = status >= minRunId
 
     /** the current edit point offset */
-    var editPoint: Int = -1
+    
 
     /** The problems reported for this unit */
     val problems = new ArrayBuffer[Problem]

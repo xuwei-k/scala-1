@@ -43,32 +43,8 @@ object ForDeletion {
     override def release(releasee: ForDeletion) = if (!Properties.isWin) Files.delete(releasee.path)
   }
 }
-object ReleasablePath {
-  // On release of a path, delete the file it represents or recursively remove the directory.
-  implicit val deleteOnRelease: Releasable[Path] = new Releasable[Path] {
-    override def release(releasee: Path) = if (!Properties.isWin) remove(releasee)
-  }
-  // Delete a File on relese.
-  implicit val deleteOnRelease2: Releasable[File] = new Releasable[File] {
-    override def release(releasee: File) = if (!Properties.isWin) releasee.delete()
-  }
 
-  private def remove(path: Path): Unit = if (Files.isDirectory(path)) removeRecursively(path) else Files.delete(path)
-
-  private def removeRecursively(path: Path): Unit = Files.walkFileTree(path, new ZappingFileVisitor)
-
-  private class ZappingFileVisitor extends SimpleFileVisitor[Path] {
-    private def zap(path: Path) = { Files.delete(path) ; Continue }
-    override def postVisitDirectory(path: Path, e: IOException): FileVisitResult = if (e != null) throw e else zap(path)
-    override def visitFile(path: Path, attrs: BasicFileAttributes): FileVisitResult = zap(path)
-  }
-}
 
 /* Things that MiMa won't let us make Autocloseable.
  */
-object Releasables {
-  import scala.reflect.io.ZipArchive
-  implicit val closeZipOnRelease: Releasable[ZipArchive] = new Releasable[ZipArchive] {
-    override def release(releasee: ZipArchive) = releasee.close()
-  }
-}
+

@@ -46,7 +46,7 @@ trait Contexts { self: Analyzer =>
   private object RootImports {
     // Possible lists of root imports
     val javaList         = JavaLangPackage :: Nil
-    val javaAndScalaList = JavaLangPackage :: ScalaPackage :: Nil
+    
     val completeList     = JavaLangPackage :: ScalaPackage :: PredefModule :: Nil
   }
   private lazy val NoJavaMemberFound = (NoType, NoSymbol)
@@ -476,7 +476,7 @@ trait Contexts { self: Analyzer =>
     def retyping                              = this(ReTyping)
     def inSecondTry                           = this(SecondTry)
     def inSecondTry_=(value: Boolean)         = this(SecondTry) = value
-    def inReturnExpr                          = this(ReturnExpr)
+    
     def inTypeConstructorAllowed              = this(TypeConstructorAllowed)
     def inAnnotation                          = this(TypingAnnotation)
 
@@ -633,7 +633,7 @@ trait Contexts { self: Analyzer =>
     }
 
     // See comment on FormerNonStickyModes.
-    @inline final def withOnlyStickyModes[T](op: => T): T = withMode(disabled = FormerNonStickyModes)(op)
+    
 
     // inliner note: this has to be a simple method for inlining to work -- moved the `&& !reporter.hasErrors` out
     @inline final def inSilentMode(expr: => Boolean): Boolean = {
@@ -1277,7 +1277,7 @@ trait Contexts { self: Analyzer =>
       else pkg.hasPackageFlag && sym.owner != pkg && requiresQualifier(sym)
     }
 
-    def isNameInScope(name: Name) = lookupSymbol(name, _ => true).isSuccess
+    
 
     def lookupSymbol(name: Name, qualifies: Symbol => Boolean): NameLookup =
       symbolLookupCache.using(_(this, name)(qualifies))

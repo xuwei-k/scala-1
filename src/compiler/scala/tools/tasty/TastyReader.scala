@@ -61,12 +61,7 @@ class TastyReader(val bytes: Array[Byte], start: Int, end: Int, val base: Int = 
   def nextByte: Int = bytes(bp) & 0xff
 
   /** Read the next `n` bytes of `data`. */
-  def readBytes(n: Int): Array[Byte] = {
-    val result = new Array[Byte](n)
-    System.arraycopy(bytes, bp, result, 0, n)
-    bp += n
-    result
-  }
+  
 
   /** Read a natural number fitting in an Int in big endian format, base 128.
    *  All but the last digits have bit 0x80 set.

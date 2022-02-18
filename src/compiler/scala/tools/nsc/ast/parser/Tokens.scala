@@ -62,8 +62,8 @@ object Tokens extends CommonTokens {
   final val XMLSTART = 139
 
   /** for IDE only */
-  final val COMMENT = 200
-  final val WHITESPACE = 201
-  final val IGNORE = 202
-  final val ESCAPE = 203
+  
+  
+  
+  
 }

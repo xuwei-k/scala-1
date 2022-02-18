@@ -83,8 +83,5 @@ trait Errors {
     throw UnexpectedReificationException(defaultErrorPosition, msg)
   }
 
-  def CannotReifyInvalidLazyVal(tree: ValDef) = {
-    val msg = "internal error: could not reconstruct original lazy val due to missing accessor"
-    throw UnexpectedReificationException(tree.pos, msg)
-  }
+  
 }

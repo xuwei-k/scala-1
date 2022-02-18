@@ -89,9 +89,7 @@ class WorkScheduler {
   }
 
   /** Called from client: cancel all queued actions */
-  def cancelQueued() = synchronized {
-    todo.clear()
-  }
+  
 
   /** Called from client:
    *  Require an exception to be thrown on next poll.

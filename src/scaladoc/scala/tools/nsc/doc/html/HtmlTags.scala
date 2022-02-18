@@ -90,7 +90,7 @@ object HtmlTags {
       xsw.writeCharacters(txt)
     }
   }
-  case class DocType(tp: String, elems: Elems = Nil)  extends Elem
+  
   case class H(i: Int, elems: Elems, id: String = null, `class`: String = null) extends Elem {
     override def attribNames = super.attribNames.tail
     override def attribValues = super.attribValues.tail
@@ -101,7 +101,7 @@ object HtmlTags {
   case class Input(autocapitalize: String = null, placeholder: String = null, id: String = null, `type`: String = null, accesskey: String = null) extends Elem with WithoutElems
   case class Div(elems: Elems = NoElems, id: String = null, name: String = null, style: String = null, `class`: String = null) extends Elem
   case class P(elems: Elems, id: String = null, `class`: String = null) extends Elem
-  case class Button(elems: Elems, title: String = null, id: String = null, `class`: String = null) extends Elem
+  
   case class B(elems: Elems) extends Elem
   case class I(elems: Elems, id: String = null, `class`: String = null) extends Elem
   case class U(elems: Elems) extends Elem

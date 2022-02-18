@@ -322,8 +322,7 @@ class Global(var currentSettings: Settings, reporter0: Reporter)
       log(msg)
   }
 
-  @deprecated("Renamed to reportThrowable", "2.10.1")
-  def logThrowable(t: Throwable): Unit = reportThrowable(t)
+  
   def reportThrowable(t: Throwable): Unit = globalError(throwableAsString(t))
   override def throwableAsString(t: Throwable) = util.stackTraceString(t)
 
@@ -426,15 +425,7 @@ class Global(var currentSettings: Settings, reporter0: Reporter)
         inform("[running phase " + name + " on " + unit + "]")
     }
 
-    @deprecated("Unused, inlined in applyPhase", since="2.13")
-    final def withCurrentUnit(unit: CompilationUnit)(task: => Unit): Unit = {
-      beforeUnit(unit)
-      if (!cancelled(unit)) {
-        currentRun.informUnitStarting(this, unit)
-        try withCurrentUnitNoLog(unit)(task)
-        finally currentRun.advanceUnit()
-      }
-    }
+    
 
     @inline
     @deprecated("Unused, see withCurrentUnit", since="2.13")
@@ -825,12 +816,7 @@ class Global(var currentSettings: Settings, reporter0: Reporter)
   /** Returns List of (phase, value) pairs, including only those
    *  where the value compares unequal to the previous phase's value.
    */
-  def afterEachPhase[T](op: => T): List[(Phase, T)] = // used in tests
-    phaseDescriptors.map(_.ownPhase).filterNot(_ eq NoPhase).foldLeft(List[(Phase, T)]()) { (res, ph) =>
-      val value = exitingPhase(ph)(op)
-      if (res.nonEmpty && res.head._2 == value) res
-      else ((ph, value)) :: res
-    }.reverse
+  
 
   // ------------ REPL utilities ---------------------------------
 
@@ -990,9 +976,7 @@ class Global(var currentSettings: Settings, reporter0: Reporter)
   private var curRun: Run = null
   private var curRunId = 0
 
-  object typeDeconstruct extends {
-    val global: Global.this.type = Global.this
-  } with typechecker.StructuredTypeStrings
+  
 
   /** There are common error conditions where when the exception hits
    *  here, currentRun.currentUnit is null.  This robs us of the knowledge
@@ -1042,7 +1026,7 @@ class Global(var currentSettings: Settings, reporter0: Reporter)
   @inline final def exitingExplicitOuter[T](op: => T): T  = exitingPhase(currentRun.explicitouterPhase)(op)
   @inline final def exitingFlatten[T](op: => T): T        = exitingPhase(currentRun.flattenPhase)(op)
   @inline final def exitingMixin[T](op: => T): T          = exitingPhase(currentRun.mixinPhase)(op)
-  @inline final def exitingDelambdafy[T](op: => T): T     = exitingPhase(currentRun.delambdafyPhase)(op)
+  
   @inline final def exitingPickler[T](op: => T): T        = exitingPhase(currentRun.picklerPhase)(op)
   @inline final def exitingRefchecks[T](op: => T): T      = exitingPhase(currentRun.refchecksPhase)(op)
   @inline final def exitingSpecialize[T](op: => T): T     = exitingPhase(currentRun.specializePhase)(op)
@@ -1050,9 +1034,9 @@ class Global(var currentSettings: Settings, reporter0: Reporter)
   @inline final def exitingUncurry[T](op: => T): T        = exitingPhase(currentRun.uncurryPhase)(op)
   @inline final def enteringErasure[T](op: => T): T       = enteringPhase(currentRun.erasurePhase)(op)
   @inline final def enteringExplicitOuter[T](op: => T): T = enteringPhase(currentRun.explicitouterPhase)(op)
-  @inline final def enteringFlatten[T](op: => T): T       = enteringPhase(currentRun.flattenPhase)(op)
+  
   @inline final def enteringMixin[T](op: => T): T         = enteringPhase(currentRun.mixinPhase)(op)
-  @inline final def enteringDelambdafy[T](op: => T): T    = enteringPhase(currentRun.delambdafyPhase)(op)
+  
   @inline final def enteringJVM[T](op: => T): T           = enteringPhase(currentRun.jvmPhase)(op)
   @inline final def enteringPickler[T](op: => T): T       = enteringPhase(currentRun.picklerPhase)(op)
   @inline final def enteringSpecialize[T](op: => T): T    = enteringPhase(currentRun.specializePhase)(op)
@@ -1365,7 +1349,7 @@ class Global(var currentSettings: Settings, reporter0: Reporter)
     val jvmPhase                     = phaseNamed("jvm")
 
     def runIsAt(ph: Phase)   = globalPhase.id == ph.id
-    def runIsAtOptimiz       = runIsAt(jvmPhase)
+    
 
     isDefined = true
 
@@ -1605,18 +1589,7 @@ class Global(var currentSettings: Settings, reporter0: Reporter)
     }
 
     /** Compile list of abstract files. */
-    def compileFiles(files: List[AbstractFile]): Unit = {
-      try {
-        val snap = profiler.beforePhase(Global.InitPhase)
-        val sources = files map getSourceFile
-        profiler.afterPhase(Global.InitPhase, snap)
-        compileSources(sources)
-      }
-      catch {
-        case ex: InterruptedException => reporter.cancelled = true
-        case ex: IOException => globalError(ex.getMessage())
-      }
-    }
+    
 
     /** Compile list of files given by their names */
     def compile(filenames: List[String]): Unit = {

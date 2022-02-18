@@ -87,8 +87,7 @@ trait Phased {
     finally setMulti(saved)
   }
 
-  def atMap[T](phs: Seq[PhaseName])(body: => T): Seq[(PhaseName, T)] =
-    phs zip atMulti(phs)(body)
+  
 
   object PhaseName {
     implicit lazy val phaseNameOrdering: Ordering[PhaseName] = Ordering[Int] on (_.id)
@@ -115,9 +114,9 @@ trait Phased {
   case object Namer extends PhaseName
   case object Packageobjects extends PhaseName
   case object Typer extends PhaseName
-  case object Patmat extends PhaseName
+  
   case object Superaccessors extends PhaseName
-  case object Extmethods extends PhaseName
+  
   case object Pickler extends PhaseName
   case object Refchecks extends PhaseName
   case object Uncurry extends PhaseName

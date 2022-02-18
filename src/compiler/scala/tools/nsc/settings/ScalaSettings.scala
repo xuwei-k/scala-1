@@ -50,7 +50,7 @@ trait ScalaSettings extends StandardScalaSettings with Warnings { _: MutableSett
   val jvmargs  = PrefixSetting("-J<flag>", "-J", "Pass <flag> directly to the runtime system.")
   val defines  = PrefixSetting("-Dproperty=value", "-D", "Pass -Dproperty=value directly to the runtime system.")
   /*val toolcp =*/ PathSetting("-toolcp", "Add to the runner classpath.", "") withAbbreviation "--tool-class-path"
-  val nobootcp = BooleanSetting("-nobootcp", "Do not use the boot classpath for the scala jars.") withAbbreviation "--no-boot-class-path"
+  
 
   /**
    *  Standard settings
@@ -99,8 +99,7 @@ trait ScalaSettings extends StandardScalaSettings with Warnings { _: MutableSett
   val async              = BooleanSetting      ("-Xasync", "Enable the async phase for scala.async.Async.{async,await}.")
   val checkInit          = BooleanSetting      ("-Xcheckinit", "Wrap field accessors to throw an exception on uninitialized access.")
   val developer          = BooleanSetting      ("-Xdev", "Issue warnings about anything which seems amiss in compiler internals. Intended for compiler developers").withPostSetHook(s => if (s.value) StatisticsStatics.enableDeveloperAndDeoptimize())
-  val noassertions       = BooleanSetting      ("-Xdisable-assertions", "Generate no assertions or assumptions.") andThen (flag =>
-                                                if (flag) elidebelow.value = elidable.ASSERTION + 1)
+  
   val elidebelow         = IntSetting          ("-Xelide-below", "Calls to @elidable methods are omitted if method priority is lower than argument",
                                                 elidable.MINIMUM, None, elidable.byName get _)
   val noForwarders       = BooleanSetting      ("-Xno-forwarders", "Do not generate static forwarders in mirror classes.")
@@ -108,9 +107,7 @@ trait ScalaSettings extends StandardScalaSettings with Warnings { _: MutableSett
   val maxerrs            = IntSetting          ("-Xmaxerrs", "Maximum errors to print", 100, None, _ => None)
   val maxwarns           = IntSetting          ("-Xmaxwarns", "Maximum warnings to print", 100, None, _ => None)
   val Xmigration         = ScalaVersionSetting ("-Xmigration", "version", "Warn about constructs whose behavior may have changed since version.", initial = NoScalaVersion, default = Some(AnyScalaVersion))
-  val Xnojline           = BooleanSetting      ("-Xnojline", "Do not use JLine for editing.")
-    .withDeprecationMessage("Replaced by -Xjline:off")
-    .withPostSetHook(_ => Xjline.value = "off")
+  
   val Xjline             = ChoiceSetting       (
     name    = "-Xjline",
     helpArg = "mode",
@@ -180,7 +177,7 @@ trait ScalaSettings extends StandardScalaSettings with Warnings { _: MutableSett
    *  not previously match the option name.
    */
   def debuginfo = g
-  def dependenciesFile = dependencyfile
+  
   def nowarnings = nowarn
   @deprecated("Use outdir instead.", since="2.13.2")
   def d = outdir
@@ -223,18 +220,7 @@ trait ScalaSettings extends StandardScalaSettings with Warnings { _: MutableSett
   ))
   val Yrecursion      = IntSetting        ("-Yrecursion", "Set recursion depth used when locking symbols.", 0, Some((0, Int.MaxValue)), (_: String) => None)
 
-  val YprintTrees = ChoiceSetting(
-      name = "-Yprint-trees",
-      helpArg = "style",
-      descr = "How to print trees when -Vprint is enabled.",
-      choices = List("text", "compact", "format", "text+format"),
-      default = "text"
-    ).withPostSetHook(pt => pt.value match {
-      case "text"        =>
-      case "compact"     => XshowtreesCompact.value = true
-      case "format"      => Xshowtrees.value = true
-      case "text+format" => XshowtreesStringified.value = true
-    })
+  
 
   val Xshowtrees      = BooleanSetting    ("-Yshow-trees", "(Requires -Vprint:) Print detailed ASTs in formatted form.").internalOnly()
   val XshowtreesCompact
@@ -258,8 +244,7 @@ trait ScalaSettings extends StandardScalaSettings with Warnings { _: MutableSett
   val Yreplclassbased = BooleanSetting    ("-Yrepl-class-based", "Use classes to wrap REPL snippets instead of objects", default = true)
   val YreplMagicImport = BooleanSetting   ("-Yrepl-use-magic-imports", "In the code that wraps REPL snippets, use magic imports rather than nesting wrapper object/classes", default = true)
   val Yreploutdir     = StringSetting     ("-Yrepl-outdir", "path", "Write repl-generated classfiles to given output directory (use \"\" to generate a temporary dir)" , "")
-  @deprecated("Unused setting will be removed", since="2.13")
-  val Yreplsync       = new BooleanSetting    ("-Yrepl-sync", "Legacy setting for sbt compatibility, unused.", default = false).internalOnly()
+  
   val Yscriptrunner   = StringSetting     ("-Yscriptrunner", "classname", "Specify a scala.tools.nsc.ScriptRunner (default, resident, shutdown, or a class name).", "default")
   val YdisableFlatCpCaching  = BooleanSetting    ("-Yno-flat-classpath-cache", "Do not cache flat classpath representation of classpath elements from jars across compiler instances.").withAbbreviation("-YdisableFlatCpCaching")
   // Zinc adds YdisableFlatCpCaching automatically for straight-to-JAR compilation, this is a way to override that choice.
@@ -457,7 +442,7 @@ trait ScalaSettings extends StandardScalaSettings with Warnings { _: MutableSett
   val YdebugTasty      = BooleanSetting("-Vdebug-tasty", "Increase the quantity of debugging output when unpickling tasty.") withAbbreviation "-Ydebug-tasty"
   val Ydocdebug          = BooleanSetting("-Vdoc", "Trace scaladoc activity.") withAbbreviation "-Ydoc-debug"
   val Yidedebug          = BooleanSetting("-Vide", "Generate, validate and output trees using the interactive compiler.") withAbbreviation "-Yide-debug"
-  val Yissuedebug        = BooleanSetting("-Vissue", "Print stack traces when a context issues an error.") withAbbreviation "-Yissue-debug"
+  
   val log                = PhasesSetting("-Vlog", "Log operations during") withAbbreviation "-Ylog"
   val Ylogcp             = BooleanSetting("-Vclasspath", "Output information about what classpath is being applied.") withAbbreviation "-Ylog-classpath"
   val YmacrodebugLite    = BooleanSetting("-Vmacro-lite", "Trace macro activities with less output.") withAbbreviation "-Ymacro-debug-lite"
@@ -524,8 +509,7 @@ trait ScalaSettings extends StandardScalaSettings with Warnings { _: MutableSett
       opt.enable(optChoices.lInline)
       optInlineFrom.value = List("**")
     })
-  val Xexperimental = BooleanSetting("-Xexperimental", "Former graveyard for language-forking extensions.")
-    .withDeprecationMessage("Not used since 2.13.")
+  
 
   // Feature extensions
   val XmacroSettings          = MultiStringSetting("-Xmacro-settings", "option", "Custom settings for macros.")
@@ -541,7 +525,7 @@ trait ScalaSettings extends StandardScalaSettings with Warnings { _: MutableSett
   val YpresentationReplay  = StringSetting("-Ypresentation-replay", "file", "Replay presentation compiler events from file", "")
   val YpresentationDelay   = IntSetting("-Ypresentation-delay", "Wait number of ms after typing before starting typechecking", 0, Some((0, 999)), str => Some(str.toInt))
 
-  val YpresentationLocateSourceFile = BooleanSetting("-Ypresentation-locate-source-file", "Enables legacy code in the classfile parser to locate a .scala file in the output directories corresponding to the SourceFile attribute .class file.")
+  
 
   /**
    * -P "Plugin" settings

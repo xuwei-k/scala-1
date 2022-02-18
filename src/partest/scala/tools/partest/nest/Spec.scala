@@ -49,13 +49,7 @@ object Spec {
     lazy val get = _buf
   }
 
-  class Choices[T: FromString](val xs: List[T]) {
-    def fs: FromString[T] = implicitly[FromString[T]]
-    def contains(x: T)    = xs contains x
-    override def toString = xs.mkString("{ ", ", ", " }")
-  }
+  
 
-  class EnvironmentVar(val name: String) {
-    override def toString = s"$${$name}"
-  }
+  
 }

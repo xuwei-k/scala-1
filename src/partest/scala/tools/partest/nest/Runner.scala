@@ -85,18 +85,11 @@ class Runner(val testInfo: TestInfo, val suiteRunner: AbstractRunner) {
     if (!suiteRunner.terse)
       System.err.println(stackTraceString(t))
   }
-  protected def crashHandler: PartialFunction[Throwable, TestState] = {
-    case t: InterruptedException =>
-      genTimeout()
-    case t: Throwable =>
-      showCrashInfo(t)
-      logFile.appendAll(stackTraceString(t))
-      genCrash(t)
-  }
+  
 
   def genPass(): TestState        = Pass(testFile)
   def genFail(reason: String)     = Fail(testFile, reason, transcript.toArray)
-  def genResult(b: Boolean)       = if (b) genPass() else genFail("predicate failed")
+  
   def genSkip(reason: String)     = Skip(testFile, reason)
   def genTimeout()                = Fail(testFile, "timed out", transcript.toArray)
   def genCrash(caught: Throwable) = Crash(testFile, caught, transcript.toArray)
@@ -129,7 +122,7 @@ class Runner(val testInfo: TestInfo, val suiteRunner: AbstractRunner) {
   /** If the action does not result in true, fail the action. */
   def nextTestActionExpectTrue(reason: String, body: => Boolean): TestState = nextTestAction(body) { case false => genFail(reason) }
   /** Fail the action. */
-  def nextTestActionFailing(reason: String): TestState = nextTestActionExpectTrue(reason, false)
+  
 
   private def assembleTestCommand(outDir: File, javaopts: List[String]): List[String] = {
     if (javaopts.nonEmpty)
@@ -500,10 +493,7 @@ class Runner(val testInfo: TestInfo, val suiteRunner: AbstractRunner) {
     def description = s"""javac $fsString"""
     lazy val result = { pushTranscript(description) ; javac(fs) }
   }
-  case class OnlyScala(fs: List[File]) extends CompileRound {
-    def description = mkScalacString()
-    lazy val result = { pushTranscript(description) ; attemptCompile(fs) }
-  }
+  
   case class ScalaAndJava(fs: List[File]) extends CompileRound {
     def description = mkScalacString()
     lazy val result = { pushTranscript(description) ; attemptCompile(fs) }

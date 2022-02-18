@@ -67,9 +67,7 @@ trait AllocationTest {
   import AllocationTest._
 
   /** Asserts whether it's expected for `a == b` to allocate memory. */
-  def nonAllocatingEqual(expected: Boolean, a: AnyRef, b: AnyRef): Unit = {
-    assertEquals(expected, nonAllocating(Boolean.box(a == b)))
-  }
+  
 
   /** Asserts that the execution of `fn` does not allocate any memory. */
   def nonAllocating[T: ClassTag](fn: => T, text: String = "", ignoreEqualCheck: Boolean = false)(implicit execution: AllocationExecution = AllocationExecution()): T = {
@@ -97,11 +95,7 @@ trait AllocationTest {
   }
 
   /** Asserts that the execution of `fn` allocates exactly `size` bytes. */
-  def exactAllocates[T: ClassTag](size: Long, text: String = "", ignoreEqualCheck: Boolean = false)(fn: => T)(implicit execution: AllocationExecution = AllocationExecution()): T = {
-    val result = allocationInfo(fn, text, ignoreEqualCheck)
-    if (result.min != size) failTest(size, text, result)
-    result.result
-  }
+  
 
   private def failTest[T](size: Long, text: String, result: AllocationInfo[T]) = {
     val extraText  = if (text.isEmpty) "" else s" -- $text"

@@ -36,32 +36,5 @@ object OptionAwait {
   }
 }
 
-abstract class OptionStateMachine extends AsyncStateMachine[Option[AnyRef], Option[AnyRef]] {
-  var result$async: Option[AnyRef] = _
 
-  // FSM translated method
-  def apply(tr$async: Option[AnyRef]): Unit
-
-  // Required methods
-  private[this] var state$async: Int = 0
-  protected def state: Int = state$async
-  protected def state_=(s: Int): Unit = state$async = s
-  protected def completeFailure(t: Throwable): Unit = throw t
-  protected def completeSuccess(value: AnyRef): Unit = result$async = Some(value)
-  protected def onComplete(f: Option[AnyRef]): Unit = ???
-  protected def getCompleted(f: Option[AnyRef]): Option[AnyRef] = {
-    f
-  }
-  protected def tryGet(tr: Option[AnyRef]): AnyRef = tr match {
-    case Some(value) =>
-      value.asInstanceOf[AnyRef]
-    case None =>
-      result$async = None
-      this // sentinel value to indicate the dispatch loop should exit.
-  }
-  def start(): Option[AnyRef] = {
-    apply(None)
-    result$async
-  }
-}
 

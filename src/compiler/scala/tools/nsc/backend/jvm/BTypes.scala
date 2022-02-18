@@ -1001,7 +1001,7 @@ abstract class BTypes {
       */
     def withoutLock[T <: AnyRef](t: => T): Lazy[T] = new LazyWithoutLock[T](() => t)
 
-    val eagerNil = eager(Nil)
+    
     val eagerNone = eager(None)
 
     private final class Eager[T](val force: T) extends Lazy[T] {
@@ -1139,16 +1139,7 @@ object BTypes {
                               sam: Option[String],
                               methodInfos: collection.SortedMap[(String, String), MethodInlineInfo],
                               warning: Option[ClassInlineInfoWarning]) {
-    lazy val methodInfosSorted: IndexedSeq[((String, String), MethodInlineInfo)] = {
-      val result = new Array[((String, String), MethodInlineInfo)](methodInfos.size)
-      var i = 0
-      methodInfos.foreachEntry { (ownerAndName, info) =>
-        result(i) = (ownerAndName, info)
-        i += 1
-      }
-      scala.util.Sorting.quickSort(result)(Ordering.by(_._1))
-      unsafeWrapArray(result)
-    }
+    
   }
 
   val EmptyInlineInfo = InlineInfo(false, None, SortedMap.empty, None)
@@ -1172,7 +1163,4 @@ object BTypes {
   val InlinedLocalVariablePrefixMaxLength = 128
 }
 
-final class ClearableJConcurrentHashMap[K, V] extends scala.collection.mutable.Clearable {
-  val map = new java.util.concurrent.ConcurrentHashMap[K,V]
-  override def clear(): Unit = map.clear()
-}
+

@@ -81,9 +81,7 @@ abstract class DirectTest {
     !global.reporter.hasErrors
   }
 
-  def javaCompilationUnits(global: Global)(sourceCodes: String*) = {
-    sourceFilesToCompiledUnits(global)(newJavaSources(sourceCodes: _*))
-  }
+  
 
   def sourceFilesToCompiledUnits(global: Global)(files: List[SourceFile]) = {
     withRun(global) { run =>
@@ -122,7 +120,7 @@ abstract class DirectTest {
   /**
     * Run a test only if the current java version is at least the version specified.
     */
-  def testUnderJavaAtLeast[A](version: String)(yesRun: => A) = ifJavaAtLeast(version)(yesRun)
+  
 }
 
 class TestUnderJavaAtLeast[A](version: String, yesRun: => A) {
@@ -141,8 +139,5 @@ class TestUnderJavaAtLeast[A](version: String, yesRun: => A) {
    * If the current java version is at least 'version' then 'yesRun' is evaluated
    * otherwise 'fallback' is
    */
-  def otherwise(fallback: => A): A = {
-    logInfo()
-    if (shouldRun) yesRun else fallback
-  }
+  
 }

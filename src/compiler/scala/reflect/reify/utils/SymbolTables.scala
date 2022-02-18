@@ -73,7 +73,7 @@ trait SymbolTables {
     def --(names: List[TermName]): SymbolTable = names.foldLeft(this)((symtab, name) => symtab.remove(name))
     def --(symDefs: Iterable[Tree]): SymbolTable = this -- (symDefs map (reifyBinding(_)))
     def --(symtab: SymbolTable): SymbolTable = { val updated = this -- symtab.symtab.values; new SymbolTable(updated.symtab, updated.aliases diff symtab.aliases) }
-    def filterSyms(p: Symbol => Boolean): SymbolTable = this -- (syms filterNot p)
+    
     def filterAliases(p: (Symbol, TermName) => Boolean): SymbolTable = this -- (aliases filterNot (tuple => p(tuple._1, tuple._2)) map (_._2))
 
     private def add(symDef: Tree): SymbolTable = {

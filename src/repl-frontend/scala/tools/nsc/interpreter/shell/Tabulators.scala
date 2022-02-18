@@ -66,62 +66,7 @@ trait Tabulator {
 }
 
 /** Adjust the column width and number of columns to minimize the row count. */
-trait VariColumnTabulator extends Tabulator {
-  override protected def printMultiLineColumns(items: Seq[String]): Seq[Seq[String]] = {
-    import SimpleMath._
-    val (longest, shortest) = items.map(graphemeCount).pipe(vs => (vs.max, vs.min))
-    val fattest  = longest + marginSize
-    val skinny   = shortest + marginSize
 
-    // given ncols, calculate nrows and a list of column widths, or none if not possible
-    // if ncols > items.size, then columnWidths.size == items.size
-    def layout(ncols: Int): Option[(Int, Seq[Int], Seq[Seq[String]])] = {
-      val nrows = items.size /% ncols
-      val xwise = isAcross || ncols >= items.length
-      // max width item in each column
-      def maxima(rows: Seq[Seq[String]]) =
-        (0 until (ncols min items.size)) map { col =>
-          val widths = for (r <- rows if r.size > col) yield graphemeCount(r(col))
-          widths.max
-        }
-      def resulting(rows: Seq[Seq[String]]) = {
-        val columnWidths = maxima(rows) map (_ + marginSize)
-        val linelen      = columnWidths.sum
-        if (linelen <= width) Some((nrows, columnWidths, rows))
-        else None
-      }
-      if (ncols == 1) resulting(columnize(items))
-      else if (xwise) resulting((items grouped ncols).toSeq)
-      else {
-        val cols = (items grouped nrows).toList
-        val rows =
-          for (i <- 0 until nrows) yield
-            for (j <- 0 until ncols) yield
-              if (j < cols.size && i < cols(j).size) cols(j)(i) else ""
-        resulting(rows)
-      }
-    }
-
-    if (fattest >= width) {
-      columnize(items)
-    } else {
-      // if every col is widest, we have at least this many cols
-      val mincols = 1 max (width / fattest)
-      // if every other col is skinniest, we have at most this many cols
-      val maxcols = 1 + ((width - fattest) / skinny)
-      val possibles = (mincols to maxcols).map(n => layout(n)).flatten
-      val minrows = (possibles map (_._1)).min
-
-      // select the min ncols that results in minrows
-      val (_, columnWidths, sss) = (possibles find (_._1 == minrows)).get
-
-      // format to column width
-      sss map (ss => ss.zipWithIndex map {
-        case (s, i) => pad(columnWidths(i), s)
-      })
-    }
-  }
-}
 
 private[interpreter] object SimpleMath {
   implicit class DivRem(private val i: Int) extends AnyVal {

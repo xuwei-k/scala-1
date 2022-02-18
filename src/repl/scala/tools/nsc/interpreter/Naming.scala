@@ -88,7 +88,7 @@ object Naming {
     def packageName(lineId: Int) = line + lineId
 
     /** Create the name for the temp val used in the -Yclass-based REPL wrapper to refer to the state of a previous line. */
-    final def lineReadValName(linePackageName: String) = s"${linePackageName}${read}"
+    
 
     // The prefix for unnamed results: by default res0, res1, etc.
     def res = propOr("res", "res") // INTERPRETER_VAR_PREFIX

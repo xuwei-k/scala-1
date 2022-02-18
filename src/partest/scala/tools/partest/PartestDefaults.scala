@@ -25,7 +25,7 @@ object PartestDefaults {
   def javaOpts    = prop("partest.java_opts")   getOrElse  ""     // opts when running java during tests
   def scalacOpts  = prop("partest.scalac_opts") getOrElse  ""
 
-  def testBuild   = prop("partest.build")
+  
   def errorCount  = prop("partest.errors")  map (_.toInt) getOrElse 0
   def numThreads  = math.max(1, prop("partest.threads") map (_.toInt) getOrElse runtime.availableProcessors)
   def execInProcess: Boolean = {

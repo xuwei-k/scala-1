@@ -29,8 +29,7 @@ trait TreeDSL {
 
   object CODE {
     // Add a null check to a Tree => Tree function
-    def nullSafe[T](f: Tree => Tree, ifNull: Tree): Tree => Tree =
-      tree => IF (tree MEMBER_== NULL) THEN ifNull ELSE f(tree)
+    
 
     object LIT extends (Any => Literal) {
       def typed(x: Any)   = apply(x) setType ConstantType(Constant(x))
@@ -67,7 +66,7 @@ trait TreeDSL {
        */
       def MEMBER_== (other: Tree)   = fn(target, (if (target.tpe == null) NoSymbol else target.tpe member nme.EQ).orElse(Any_==), other)
       def ANY_EQ  (other: Tree)     = OBJ_EQ(other AS ObjectTpe)
-      def ANY_==  (other: Tree)     = fn(target, Any_==, other)
+      
       def ANY_!=  (other: Tree)     = fn(target, Any_!=, other)
       def OBJ_EQ  (other: Tree)     = fn(target, Object_eq,     other)
       def OBJ_NE  (other: Tree)     = fn(target, Object_ne,     other)
@@ -79,14 +78,10 @@ trait TreeDSL {
       def INT_-   (other: Tree)     = fn(target, getMember(IntClass, nme.MINUS), other)
 
       // generic operations on ByteClass, IntClass, LongClass
-      @unused("avoid warning for multiple parameters")
-      def GEN_|   (other: Tree, kind: ClassSymbol)  = fn(target, getMember(kind, nme.OR), other)
-      @unused("avoid warning for multiple parameters")
-      def GEN_&   (other: Tree, kind: ClassSymbol)  = fn(target, getMember(kind, nme.AND), other)
-      @unused("avoid warning for multiple parameters")
-      def GEN_==  (other: Tree, kind: ClassSymbol)  = fn(target, getMember(kind, nme.EQ), other)
-      @unused("avoid warning for multiple parameters")
-      def GEN_!=  (other: Tree, kind: ClassSymbol)  = fn(target, getMember(kind, nme.NE), other)
+      
+      
+      
+      
 
       /** Apply, Select, Match **/
       def APPLY(params: Tree*)      = Apply(target, params.toList)
@@ -125,7 +120,7 @@ trait TreeDSL {
     class IfStart(cond: Tree, thenp: Tree) {
       def THEN(x: Tree)     = new IfStart(cond, x)
       def ELSE(elsep: Tree) = If(cond, thenp, elsep)
-      def ENDIF             = If(cond, thenp, EmptyTree)
+      
     }
     class TryStart(body: Tree, catches: List[CaseDef], fin: Tree) {
       def CATCH(xs: CaseDef*) = new TryStart(body, xs.toList, fin)

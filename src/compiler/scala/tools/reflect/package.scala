@@ -43,12 +43,7 @@ package object reflect {
    *  0 stands for INFO, 1 stands for WARNING and 2 stands for ERROR.
    */
   // todo. untangle warningsAsErrors from Reporters. I don't feel like moving this flag here!
-  def mkConsoleFrontEnd(minSeverity: Int = 1): FrontEnd = {
-    val settings = new Settings()
-    if (minSeverity <= 0) settings.verbose.value = true
-    if (minSeverity > 1) settings.nowarn.value = true
-    reporterToFrontEnd(new ConsoleReporter(settings))
-  }
+  
 
   private[reflect] def reporterToFrontEnd(reporter: FilteringReporter): FrontEnd = new FrontEnd {
     val API_INFO = INFO

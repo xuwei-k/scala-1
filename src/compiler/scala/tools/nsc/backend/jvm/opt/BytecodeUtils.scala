@@ -104,9 +104,7 @@ object BytecodeUtils {
     op == INVOKESPECIAL || op == INVOKEVIRTUAL || op == INVOKEINTERFACE
   }
 
-  def isCall(instruction: AbstractInsnNode): Boolean = {
-    isStaticCall(instruction) || isVirtualCall(instruction)
-  }
+  
 
   def isExecutable(instruction: AbstractInsnNode): Boolean = instruction.getOpcode >= 0
 
@@ -285,26 +283,7 @@ object BytecodeUtils {
     (Type.getArgumentsAndReturnSizes(methodNode.desc) >> 2) - (if (isStaticMethod(methodNode)) 1 else 0)
   }
 
-  def substituteLabel(reference: AnyRef, from: LabelNode, to: LabelNode): Unit = {
-    def substList(list: java.util.List[LabelNode]) = {
-      foreachWithIndex(list.asScala.toList) { case (l, i) =>
-        if (l == from) list.set(i, to)
-      }
-    }
-    (reference: @unchecked) match {
-      case jump: JumpInsnNode           => jump.label = to
-      case line: LineNumberNode         => line.start = to
-      case switch: LookupSwitchInsnNode => substList(switch.labels); if (switch.dflt == from) switch.dflt = to
-      case switch: TableSwitchInsnNode  => substList(switch.labels); if (switch.dflt == from) switch.dflt = to
-      case local: LocalVariableNode     =>
-        if (local.start == from) local.start = to
-        if (local.end == from) local.end = to
-      case handler: TryCatchBlockNode   =>
-        if (handler.start == from) handler.start = to
-        if (handler.handler == from) handler.handler = to
-        if (handler.end == from) handler.end = to
-    }
-  }
+  
 
   def callsiteTooLargeAfterInlining(caller: MethodNode, callee: MethodNode): Boolean = {
     // Looking at the implementation of CodeSizeEvaluator, all instructions except tableswitch and

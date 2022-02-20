@@ -95,11 +95,11 @@ abstract class ScalaPrimitives {
   final val CONCAT = 100                       // String.valueOf(x)+String.valueOf(y)
 
   // coercions
-  final val COERCE = 101
+  
 
   // RunTime operations
-  final val BOX = 110                          // RunTime.box_<X>(x)
-  final val UNBOX = 111                        // RunTime.unbox_<X>(x)
+                            // RunTime.box_<X>(x)
+                          // RunTime.unbox_<X>(x)
   final val NEW_ZARRAY = 112                   // RunTime.zarray(x)
   final val NEW_BARRAY = 113                   // RunTime.barray(x)
   final val NEW_SARRAY = 114                   // RunTime.sarray(x)

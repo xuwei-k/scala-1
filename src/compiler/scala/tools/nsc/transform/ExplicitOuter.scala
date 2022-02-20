@@ -75,12 +75,7 @@ abstract class ExplicitOuter extends InfoTransform
     result
   }
 
-  class RemoveBindingsTransformer(toRemove: Set[Symbol]) extends AstTransformer {
-    override def transform(tree: Tree) = tree match {
-      case Bind(_, body) if toRemove(tree.symbol) => super.transform(body)
-      case _                                      => super.transform(tree)
-    }
-  }
+  
 
   def outerAccessor(clazz: Symbol): Symbol = {
     val firstTry = clazz.info.decl(nme.expandedName(nme.OUTER, clazz))

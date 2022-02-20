@@ -212,7 +212,7 @@ abstract class ClassfileParser(reader: ReusableInstance[ReusableDataReader]) {
     protected val values       = new Array[AnyRef](len)
     protected val internalized = new Array[NameOrString](len)
 
-    val initBp = in.bp
+    
 
     { var i = 1
       while (i < starts.length) {
@@ -231,7 +231,7 @@ abstract class ClassfileParser(reader: ReusableInstance[ReusableDataReader]) {
         }
       }
     }
-    val endBp = in.bp
+    
     def recordAtIndex[T <: AnyRef](value: T, idx: Int): T = {
       values(idx) = value
       value
@@ -291,24 +291,7 @@ abstract class ClassfileParser(reader: ReusableInstance[ReusableDataReader]) {
      *  if a symbol of the given name already exists, and has a different
      *  type.
      */
-    protected def getNameAndType(index: Int, ownerTpe: Type): (Name, Type) = {
-      if (index <= 0 || len <= index) errorBadIndex(index)
-      values(index) match {
-        case p: ((Name @unchecked, Type @unchecked)) => p
-        case _                                       =>
-          val start = firstExpecting(index, CONSTANT_NAMEANDTYPE)
-          val name = getName(in.getChar(start).toInt)
-          // create a dummy symbol for method types
-          val dummy = ownerTpe.typeSymbol.newMethod(name.name.toTermName, ownerTpe.typeSymbol.pos)
-          val tpe   = getType(dummy, in.getChar(start + 2).toInt)
-          // fix the return type, which is blindly set to the class currently parsed
-          val restpe = tpe match {
-            case MethodType(formals, _) if name.name == nme.CONSTRUCTOR => MethodType(formals, ownerTpe)
-            case _                                                      => tpe
-          }
-          ((name.name, restpe))
-      }
-    }
+    
 
     /** Return the type of a class constant entry. Since
      *  arrays are considered to be class types, they might
@@ -1350,11 +1333,7 @@ abstract class ClassfileParser(reader: ReusableInstance[ReusableDataReader]) {
   class TypeParamsType(override val typeParams: List[Symbol]) extends LazyType with FlagAgnosticCompleter {
     override def complete(sym: Symbol): Unit = { throw new AssertionError("cyclic type dereferencing") }
   }
-  class LazyAliasType(alias: Symbol) extends LazyType with FlagAgnosticCompleter {
-    override def complete(sym: Symbol): Unit = {
-      sym setInfo createFromClonedSymbols(alias.initialize.typeParams, alias.tpe)(typeFun)
-    }
-  }
+  
   private class ParamNames(val names: Array[NameOrString], val access: Array[Int]) {
     assert(names.length == access.length, "Require as many names as access")
     def length = names.length

@@ -366,7 +366,7 @@ class PipelineMainClass(argFiles: Seq[Path], pipelineSettings: PipelineMain.Pipe
     }
     lazy val classPath: Seq[Path] = expand(command.settings.classpath)
     lazy val macroClassPath: Seq[Path] = expand(command.settings.YmacroClasspath)
-    lazy val macroClassPathSet: Set[Path] = macroClassPath.toSet
+    
     lazy val pluginClassPath: Set[Path] = {
       def asPath(p: String) = ClassPath split p
 
@@ -407,7 +407,7 @@ class PipelineMainClass(argFiles: Seq[Path], pipelineSettings: PipelineMain.Pipe
     }
     command.settings.outputDirs.getSingleOutput.get.file.mkdirs()
 
-    val isGrouped = groups.size > 1
+    
 
     val outlineTimer = new Timer()
     val javaTimer = new Timer()
@@ -601,7 +601,7 @@ class PipelineMainClass(argFiles: Seq[Path], pipelineSettings: PipelineMain.Pipe
       thread = Thread.currentThread()
       endNanos = System.nanoTime()
     }
-    def startMs: Double = startNanos.toDouble / 1000 / 1000
+    
     def durationMs: Double = {
       val result = (endNanos - startNanos).toDouble / 1000 / 1000
       if (result < 0)

@@ -318,10 +318,7 @@ trait AnalyzerPlugins { self: Analyzer with splain.SplainData =>
   private var analyzerPlugins: List[AnalyzerPlugin] = Nil
 
   /** Registers a new analyzer plugin */
-  def addAnalyzerPlugin(plugin: AnalyzerPlugin): Unit = {
-    if (!analyzerPlugins.contains(plugin))
-      analyzerPlugins = plugin :: analyzerPlugins
-  }
+  
 
   private abstract class CumulativeOp[T] {
     def default: T
@@ -411,10 +408,7 @@ trait AnalyzerPlugins { self: Analyzer with splain.SplainData =>
   private var macroPlugins: List[MacroPlugin] = Nil
 
   /** Registers a new macro plugin */
-  def addMacroPlugin(plugin: MacroPlugin): Unit = {
-    if (!macroPlugins.contains(plugin))
-      macroPlugins = plugin :: macroPlugins
-  }
+  
 
   private abstract class NonCumulativeOp[T] {
     def position: Position

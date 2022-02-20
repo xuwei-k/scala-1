@@ -195,7 +195,7 @@ abstract class CoreBTypesFromSymbols[G <: Global] extends CoreBTypes {
   def                     jliMethodHandleRef        : ClassBType = _jliMethodHandleRef.get
   private[this] lazy val _jliMethodHandleRef        : LazyVar[ClassBType] = runLazy(classBTypeFromSymbol(requiredClass[java.lang.invoke.MethodHandle]))
 
-  def                     jliMethodHandlesRef       : ClassBType = _jliMethodHandlesRef.get
+  
   private[this] lazy val _jliMethodHandlesRef       : LazyVar[ClassBType] = runLazy(classBTypeFromSymbol(requiredClass[java.lang.invoke.MethodHandles]))
 
   def                     jliMethodHandlesLookupRef : ClassBType = _jliMethodHandlesLookupRef.get
@@ -213,10 +213,10 @@ abstract class CoreBTypesFromSymbols[G <: Global] extends CoreBTypes {
   def                     srBoxesRunTimeRef         : ClassBType = _srBoxesRunTimeRef.get
   private[this] lazy val _srBoxesRunTimeRef         : LazyVar[ClassBType] = runLazy(classBTypeFromSymbol(requiredClass[scala.runtime.BoxesRunTime]))
 
-  def                     srSymbolLiteral           : ClassBType = _srSymbolLiteral.get
+  
   private[this] lazy val _srSymbolLiteral           : LazyVar[ClassBType] = runLazy(classBTypeFromSymbol(requiredClass[scala.runtime.SymbolLiteral]))
 
-  def                     srStructuralCallSite      : ClassBType = _srStructuralCallSite.get
+  
   private[this] lazy val _srStructuralCallSite      : LazyVar[ClassBType] = runLazy(classBTypeFromSymbol(requiredClass[scala.runtime.StructuralCallSite]))
 
   def                     srLambdaDeserialize       : ClassBType = _srLambdaDeserialize.get

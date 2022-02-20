@@ -70,17 +70,17 @@ case class ProfileRange(start: ProfileSnap, end:ProfileSnap, phase:Phase, purpos
   private def toMegaBytes(bytes: Long) = bytes / 1000000.0D
 
 
-  def wallClockTimeMillis = toMillis(end.snapTimeNanos - start.snapTimeNanos)
+  
 
-  def idleTimeMillis = toMillis(end.idleTimeNanos - start.idleTimeNanos)
+  
 
-  def cpuTimeMillis = toMillis(end.cpuTimeNanos - start.cpuTimeNanos)
+  
 
-  def userTimeMillis = toMillis(end.userTimeNanos - start.userTimeNanos)
+  
 
-  def allocatedMB = toMegaBytes(end.allocatedBytes - start.allocatedBytes)
+  
 
-  def retainedHeapMB = toMegaBytes(end.heapBytes - start.heapBytes)
+  
 }
 
 sealed abstract class Profiler {
@@ -119,7 +119,7 @@ private [profile] object NoOpProfiler extends Profiler {
 }
 private [profile] object RealProfiler {
   import scala.jdk.CollectionConverters._
-  val runtimeMx = ManagementFactory.getRuntimeMXBean
+  
   val memoryMx = ManagementFactory.getMemoryMXBean
   val gcMx = ManagementFactory.getGarbageCollectorMXBeans.asScala.toList
   val classLoaderMx = ManagementFactory.getClassLoadingMXBean

@@ -557,7 +557,7 @@ abstract class Fields extends InfoTransform with ast.TreeDSL with TypingTransfor
 
     def mkTypedUnit(pos: Position) = typedPos(pos)(CODE.UNIT)
     // TODO: clean up. this method is not used
-    def deriveUnitDef(stat: Tree)  = deriveDefDef(stat)(_ => mkTypedUnit(stat.pos))
+    
 
     def mkAccessor(accessor: Symbol)(body: Tree) = typedPos(accessor.pos)(DefDef(accessor, body)).asInstanceOf[DefDef]
 

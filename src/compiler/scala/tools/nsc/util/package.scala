@@ -90,13 +90,7 @@ package object util {
    *  message if any, and the first non-Predef location in the stack trace
    *  (to exclude assert, require, etc.)
    */
-  def stackTraceHeadString(ex: Throwable): String = {
-    val frame = ex.getStackTrace.dropWhile(_.getClassName contains "Predef") take 1 mkString ""
-    val msg   = ex.getMessage match { case null | "" => "" ; case s => s"""("$s")""" }
-    val clazz = ex.getClass.getName.split('.').last
-
-    s"$clazz$msg @ $frame"
-  }
+  
 
   implicit class StackTraceOps(private val e: Throwable) extends AnyVal with StackTracing {
     /** Format the stack trace, returning the prefix consisting of frames that satisfy

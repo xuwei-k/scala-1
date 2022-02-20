@@ -34,15 +34,7 @@ trait WrappedProperties extends PropertiesTrait {
   override def envOrNone(name: String)               = wrap(super.envOrNone(name)).flatten
   override def envOrSome(name: String, alt: => Option[String]) = wrap(super.envOrNone(name)).flatten orElse alt
 
-  def systemProperties: List[(String, String)] = {
-    import scala.jdk.CollectionConverters._
-    wrap {
-      // scala/bug#7269,7775 Avoid `ConcurrentModificationException` and nulls if another thread modifies properties
-      val props = System.getProperties
-      val it = props.stringPropertyNames().asScala.iterator map (k => (k, props getProperty k)) filter (_._2 ne null)
-      it.toList
-    } getOrElse Nil
-  }
+  
 }
 
 object WrappedProperties {

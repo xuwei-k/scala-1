@@ -148,7 +148,5 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
     override def toString() = name + " = " + (if (value == "") "\"\"" else value)
   }
 
-  trait InternalSetting extends AbsSetting {
-    override def isInternalOnly = true
-  }
+  
 }

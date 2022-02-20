@@ -129,7 +129,7 @@ trait TypeOps { self: TastyUniverse =>
     case tpe                 => tpe
   }
 
-  def emptyTypeBounds: Type = u.TypeBounds.empty
+  
 
   def intersectionParts(tpe: Type): List[Type] = tpe match {
     case tpe: u.RefinedType => tpe.parents

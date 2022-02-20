@@ -127,8 +127,8 @@ object TastyFormat {
   )
 
   final val ASTsSection = "ASTs"
-  final val PositionsSection = "Positions"
-  final val CommentsSection = "Comments"
+  
+  
 
   /** Tags used to serialize names, should update [[TastyFormat$.nameTagToString]] if a new constant is added */
   class NameTags {
@@ -172,24 +172,7 @@ object TastyFormat {
    *
    * For debugging purposes when unpickling names in a TASTy file.
    */
-  def nameTagToString(tag: Int) = {
-    import NameTags._
-    tag match {
-      case UTF8 => "UTF8"
-      case QUALIFIED => "QUALIFIED"
-      case EXPANDED => "EXPANDED"
-      case EXPANDPREFIX => "EXPANDPREFIX"
-      case UNIQUE => "UNIQUE"
-      case DEFAULTGETTER => "DEFAULTGETTER"
-      case SUPERACCESSOR => "SUPERACCESSOR"
-      case INLINEACCESSOR => "INLINEACCESSOR"
-      case BODYRETAINER => "BODYRETAINER"
-      case OBJECTCLASS => "OBJECTCLASS"
-      case SIGNED => "SIGNED"
-      case TARGETSIGNED => "TARGETSIGNED"
-      case id => s"NotANameTag($id)"
-    }
-  }
+  
 
   // Position header
 
@@ -356,13 +339,7 @@ object TastyFormat {
   final val firstLengthTreeTag = PACKAGE
 
   /** Useful for debugging */
-  def isLegalTag(tag: Int): Boolean =
-    firstSimpleTreeTag <= tag && tag <= SPLITCLAUSE ||
-    firstNatTreeTag <= tag && tag <= RENAMED ||
-    firstASTTreeTag <= tag && tag <= BOUNDED ||
-    firstNatASTTreeTag <= tag && tag <= NAMEDARG ||
-    firstLengthTreeTag <= tag && tag <= MATCHtpt ||
-    tag == HOLE
+  
 
   def isParamTag(tag: Int): Boolean = tag == PARAM || tag == TYPEPARAM
 

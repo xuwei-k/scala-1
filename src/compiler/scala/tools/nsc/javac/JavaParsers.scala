@@ -30,7 +30,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
   import global._
   import definitions._
 
-  case class JavaOpInfo(operand: Tree, operator: Name, pos: Int)
+  
 
   class JavaUnitParser(val unit: global.CompilationUnit) extends JavaParser {
     val in = new JavaUnitScanner(unit)

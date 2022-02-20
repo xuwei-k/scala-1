@@ -156,14 +156,7 @@ object AsmUtils {
     sw.toString.trim
   }
 
-  def asmify(cnode: ClassNode): String = {
-    val trace = new TraceClassVisitor(null, new ASMifier(), null)
-    cnode.accept(trace)
-    val sw = new StringWriter
-    val pw = new PrintWriter(sw)
-    trace.p.print(pw)
-    sw.toString
-  }
+  
 
   /**
    * Returns a human-readable representation of the given instruction sequence.

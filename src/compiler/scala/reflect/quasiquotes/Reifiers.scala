@@ -34,7 +34,7 @@ trait Reifiers { self: Quasiquotes =>
 
     def isReifyingPatterns: Boolean = !isReifyingExpressions
     def action = if (isReifyingExpressions) "unquote" else "extract"
-    def holesHaveTypes = isReifyingExpressions
+    
 
     /** Map that stores freshly generated names linked to the corresponding names in the reified tree.
      *  This information is used to reify names created by calls to freshTermName and freshTypeName.

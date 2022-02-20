@@ -77,8 +77,7 @@ trait GenUtils {
   def mkList(args: List[Tree]): Tree =
     scalaFactoryCall("collection.immutable.List", args: _*)
 
-  def mkListMap(args: List[Tree]): Tree =
-    scalaFactoryCall("collection.immutable.ListMap", args: _*)
+  
 
   /**
    * An (unreified) path that refers to definition with given fully qualified name

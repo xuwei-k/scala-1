@@ -41,7 +41,7 @@ trait StructuredTypeStrings extends DestructureTypes {
   val NoGrouping      = Grouping("", "", "", labels = false)
   val ListGrouping    = Grouping("(", ", ", ")", labels = false)
   val ProductGrouping = Grouping("(", ", ", ")", labels = true)
-  val BlockGrouping   = Grouping(" { ", "; ", "}", labels = false)
+  
 
   private def str(level: Int)(body: => String): String = "  " * level + body
   private def block(level: Int, grouping: Grouping)(name: String, nodes: List[TypeNode]): String = {

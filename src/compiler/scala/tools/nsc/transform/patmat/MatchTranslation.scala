@@ -395,7 +395,7 @@ trait MatchTranslation {
       // there are `productArity` non-seq elements in the tuple.
       protected def firstIndexingBinder = productArity
       protected def expectedLength      = elementArity
-      protected def lastIndexingBinder  = nonStarArity - 1
+      
 
       private def productElemsToN(binder: Symbol, n: Int): List[Tree] = if (n == 0) Nil else List.tabulate(n)(i => tupleSel(binder)(i + 1))
       private def genTake(binder: Symbol, n: Int): List[Tree]         = if (n == 0) Nil else List.tabulate(n)(codegen index seqTree(binder, forceImmutable = false))

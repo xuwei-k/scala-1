@@ -29,11 +29,7 @@ case class PluginDescription(name: String, classname: String) {
   /** An XML representation of this description.
    *  It should be stored inside the jar archive file.
    */
-  def toXML: String =
-    sm"""<plugin>
-         | <name>${name}</name>
-         | <classname>${classname}</classname>
-         |</plugin>"""
+  
 }
 
 /** Utilities for the PluginDescription class.

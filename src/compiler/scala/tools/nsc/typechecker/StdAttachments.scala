@@ -254,7 +254,7 @@ trait MacroAnnotationAttachments {
   def markMaybeExpandee(sym: Symbol): Symbol = if (sym != null && sym != NoSymbol) sym.updateAttachment(Unknown) else sym
   def markExpanded(sym: Symbol): Symbol = if (sym != null && sym != NoSymbol) sym.updateAttachment(Expanded) else sym
   def markNotExpandable(sym: Symbol): Symbol = if (sym != null && sym != NoSymbol) sym.updateAttachment(NotExpandable) else sym
-  def unmarkExpanded(sym: Symbol): Symbol = if (sym != null && sym != NoSymbol) sym.removeAttachment[SymbolExpansionStatus] else sym
+  
 
   case class CacheAttachment(cache: mutable.Map[String, Any])
   implicit class RichTree(tree: Tree) {

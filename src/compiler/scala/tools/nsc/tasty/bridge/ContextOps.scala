@@ -583,8 +583,7 @@ trait ContextOps { self: TastyUniverse =>
     final def withOwner(owner: Symbol): Context =
       if (owner `ne` this.owner) freshSymbol(owner) else this
 
-    final def withNewScope: Context =
-      freshSymbol(newLocalDummy)
+    
 
     final def freshSymbol(owner: Symbol): FreshContext = new FreshContext(owner, this, this.mode)
     final def freshMode(mode: TastyMode): FreshContext = new FreshContext(this.owner, this, mode)

@@ -126,7 +126,7 @@ trait Warnings {
     val Implicits = Choice("implicits", "Warn if an implicit parameter is unused.")
     val Synthetics = Choice("synthetics", "Warn if a synthetic implicit parameter (context bound) is unused.")
     val Nowarn    = Choice("nowarn",    "Warn if a @nowarn annotation does not suppress any warnings.")
-    val Params    = Choice("params",    "Enable -Wunused:explicits,implicits,synthetics.", expandsTo = List(Explicits, Implicits, Synthetics))
+    
     val Linted    = Choice("linted",    "-Xlint:unused.", expandsTo = List(Imports, Privates, Locals, Implicits, Nowarn))
   }
 
@@ -195,7 +195,7 @@ trait Warnings {
     val MultiargInfix          = LintWarning("multiarg-infix",            "Infix operator was defined or used with multiarg operand.")
     val ImplicitRecursion      = LintWarning("implicit-recursion",        "Implicit resolves to an enclosing definition.")
 
-    def allLintWarnings = values.toSeq.asInstanceOf[Seq[LintWarning]]
+    
   }
   import LintWarnings._
 
@@ -214,7 +214,7 @@ trait Warnings {
   def warnStrictUnsealedPatMat   = lint contains StrictUnsealedPatMat
   def warnStarsAlign             = lint contains StarsAlign
   def warnConstant               = lint contains Constant
-  def lintUnused                 = lint contains Unused
+  
   def warnNonlocalReturn         = lint contains NonlocalReturn
   def lintImplicitNotFound       = lint contains ImplicitNotFound
   def warnSerialization          = lint contains Serial
@@ -242,9 +242,9 @@ trait Warnings {
   }
 
   // Backward compatibility.
-  @deprecated("Use fatalWarnings", "2.11.0") def Xwarnfatal            = fatalWarnings      // used by sbt
+        // used by sbt
 
   private lazy val warnSelectNullable = BooleanSetting("-Xcheck-null", "This option is obsolete and does nothing.")
-  @deprecated("This option is being removed", "2.11.0") def Xchecknull = warnSelectNullable // used by ide
-  @deprecated("Use warnDeadCode", "2.11.0") def Ywarndeadcode          = warnDeadCode       // used by ide
+   // used by ide
+         // used by ide
 }

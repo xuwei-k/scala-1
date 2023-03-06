@@ -334,10 +334,7 @@ object PartialFunction {
   private class Lifted[-A, +B] (val pf: PartialFunction[A, B])
       extends scala.runtime.AbstractFunction1[A, Option[B]] with Serializable {
 
-    def apply(x: A): Option[B] = {
-      val z = pf.applyOrElse(x, checkFallback[B])
-      if (!fallbackOccurred(z)) Some(z) else None
-    }
+    def apply(x: A): Option[B] = PartialFunction.condOpt(x)(pf)
   }
 
   private class Unlifted[A, B] (f: A => Option[B]) extends scala.runtime.AbstractPartialFunction[A, B] with Serializable {

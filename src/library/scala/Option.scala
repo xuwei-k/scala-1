@@ -459,7 +459,7 @@ sealed abstract class Option[+A] extends IterableOnce[A] with Product with Seria
    *  value (if possible), or $none.
    */
   @inline final def collect[B](pf: PartialFunction[A, B]): Option[B] =
-    if (!isEmpty) pf.lift(this.get) else None
+    if (!isEmpty) PartialFunction.condOpt(this.get)(pf) else None
 
   /** Returns this $option if it is nonempty,
    *  otherwise return the result of evaluating `alternative`.

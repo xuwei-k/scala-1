@@ -103,42 +103,6 @@ Global / scalaVersion      := {
 
 // Run `sbt -Dscala.build.publishDevelocity` to publish build scans to develocity.scala-lang.org
 // In Jenkins, the `...publishDevelocity=stage` value is used to set the `JENKINS_STAGE` value of the scan
-ThisBuild / develocityConfiguration := {
-  def pubDev = Option(System.getProperty("scala.build.publishDevelocity"))
-  val isInsideCI = sys.env.get("JENKINS_URL").exists(_.contains("scala-ci.typesafe.com"))
-  val config = develocityConfiguration.value
-  val buildScan = config.buildScan
-  val buildCache = config.buildCache
-  config
-    .withProjectId(ProjectId("scala2"))
-    .withServer(config.server.withUrl(Some(url("https://develocity.scala-lang.org"))))
-    .withBuildScan(
-      buildScan
-        .withPublishing(Publishing.onlyIf(ctx => pubDev.nonEmpty && ctx.authenticated))
-        .withBackgroundUpload(false)
-        .withTag(if (isInsideCI) "CI" else "Local")
-        .withTag("2.13")
-        .withLinks(buildScan.links ++
-          sys.env.get("BUILD_URL").map(u => "Jenkins Build" -> url(u)) ++
-          sys.env.get("repo_ref").map(sha => "GitHub Commit" -> url(s"https://github.com/scala/scala/commit/$sha")) ++
-          sys.env.get("_scabot_pr").map(pr => "GitHub PR " -> url(s"https://github.com/scala/scala/pull/$pr")))
-        .withValues(buildScan.values +
-          ("GITHUB_REPOSITORY" -> "scala/scala") +
-          ("GITHUB_BRANCH" -> "2.13.x") ++
-          pubDev.filterNot(_.isEmpty).map("JENKINS_STAGE" -> _) ++
-          sys.env.get("JOB_NAME").map("JENKINS_JOB_NAME" -> _) ++
-          sys.env.get("repo_ref").map("GITHUB_SHA" -> _) ++
-          sys.env.get("_scabot_pr").map("GITHUB_PR" -> _) ++
-          sys.env.get("NODE_NAME").map("JENKINS_NODE" -> _))
-        .withObfuscation(buildScan.obfuscation.withIpAddresses(_.map(_ => "0.0.0.0")))
-    )
-    .withBuildCache(
-      buildCache
-        .withLocal(buildCache.local.withEnabled(false))
-        .withRemote(buildCache.remote.withEnabled(false))
-    )
-}
-
 lazy val instanceSettings = Seq[Setting[_]](
   // we don't cross build Scala itself
   crossPaths := false,
@@ -814,7 +778,6 @@ lazy val bench = project.in(file("test") / "benchmarks")
   .settings(if (benchmarkScalaVersion == "") instanceSettings else Seq(scalaVersion := benchmarkScalaVersion, crossPaths := false))
   .settings(disableDocs)
   .settings(publish / skip := true)
-  .enablePlugins(JmhPlugin)
   .settings(
     name := "test-benchmarks",
     autoScalaLibrary := false,
@@ -827,12 +790,6 @@ lazy val bench = project.in(file("test") / "benchmarks")
     },
     //scalacOptions ++= Seq("-feature", "-opt:inline:scala/**", "-Wopt"),
     scalacOptions ++= Seq("-feature", "-opt:l:inline", "-opt-inline-from:scala/**", "-opt-warnings"),
-  )
-  .settings(inConfig(JmhPlugin.JmhKeys.Jmh)(scalabuild.JitWatchFilePlugin.jitwatchSettings))
-  .settings(
-    // Skips JMH source generators during IDE import to avoid needing to compile scala-library during the import
-    // should not be needed once sbt-jmh 0.4.3 is out (https://github.com/sbt/sbt-jmh/pull/207)
-    inConfig(Jmh)(skipProjectInIDEs)
   )
 
 
@@ -1284,8 +1241,6 @@ lazy val remainingTests = List(
   (osgiTestFelix   / Test / Keys.test).result.map(_ -> "osgiTestFelix/test"),
   (osgiTestEclipse / Test / Keys.test).result.map(_ -> "osgiTestEclipse/test"),
   (sbtTest / scripted         ).toTask("").result.map(_ -> "sbtTest/scripted"),
-  (library / mimaReportBinaryIssues      ).result.map(_ -> "library/mimaReportBinaryIssues"), // doesn't aggregate..
-  (reflect / mimaReportBinaryIssues      ).result.map(_ -> "reflect/mimaReportBinaryIssues"), // ..so specify both
   (testJDeps                             ).result.map(_ -> "testJDeps"),
   (testJarSize                           ).result.map(_ -> "testJarSize"),
   (bench / Compile / compile).map(_ => ()).result.map(_ -> "bench/compile"),
